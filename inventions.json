@@ -1,0 +1,602 @@
+[
+	{
+		"_id": "carte:1",
+		"cue": "Invention de la Céramique",
+		"show": "Céramique",
+		"rep": "-10500"
+	},
+	{
+		"_id": "carte:2",
+		"cue": "Invention du Plâtre",
+		"show": "Plâtre",
+		"rep": "-9500"
+	},
+	{
+		"_id": "carte:3",
+		"cue": "Invention du Tissage",
+		"show": "Tissage",
+		"rep": "-10000"
+	},
+	{
+		"_id": "carte:4",
+		"cue": "Invention de la Charrue",
+		"show": "Charrue",
+		"rep": "-8500"
+	},
+	{
+		"_id": "carte:5",
+		"cue": "Domestication du Cochon",
+		"show": "Cochon",
+		"rep": "-7400"
+	},
+	{
+		"_id": "carte:6",
+		"cue": "Invention de l'Irrigation",
+		"show": "Irrigation",
+		"rep": "-6900"
+	},
+	{
+		"_id": "carte:7",
+		"cue": "Invention de la Lampe à huile",
+		"show": "Lampe à huile",
+		"rep": "-7000"
+	},
+	{
+		"_id": "carte:8",
+		"cue": "Invention de la Lampe à pétrole",
+		"show": "Lampe à pétrole",
+		"rep": "1853"
+	},
+	{
+		"_id": "carte:9",
+		"cue": "Première Utilisation du Pétrole",
+		"show": "Pétrole",
+		"rep": "-6000"
+	},
+	{
+		"_id": "carte:10",
+		"cue": "Premières Techniques de Calcul",
+		"show": "Calcul",
+		"rep": "-6900"
+	},
+	{
+		"_id": "carte:11",
+		"cue": "Invention du Tissage de la Laine",
+		"show": "Laine",
+		"rep": "-5750"
+	},
+	{
+		"_id": "carte:12",
+		"cue": "Invention de la Forge",
+		"show": "Forge",
+		"rep": "-5000"
+	},
+	{
+		"_id": "carte:13",
+		"cue": "Invention du Vin",
+		"show": "Vin",
+		"rep": "-5000"
+	},
+	{
+		"_id": "carte:14",
+		"cue": "Invention du Chewing-Gum",
+		"show": "Chewing-Gum",
+		"rep": "-4500"
+	},
+	{
+		"_id": "carte:15",
+		"cue": "Invention du Ski",
+		"show": "Ski",
+		"rep": "-4000"
+	},
+	{
+		"_id": "carte:16",
+		"cue": "Premières Unités Combattantes à Ski",
+		"show": "Soldats à Ski",
+		"rep": "1539"
+	},
+	{
+		"_id": "carte:17",
+		"cue": "Invention de la Teinture",
+		"show": "Teinture",
+		"rep": "-3750"
+	},
+	{
+		"_id": "carte:18",
+		"cue": "Découverte du Bronze",
+		"show": "Bronze",
+		"rep": "-3500"
+	},
+	{
+		"_id": "carte:19",
+		"cue": "Invention du Barrage Hydraulique",
+		"show": "Barrage Hydraulique",
+		"rep": "-3000"
+	},
+	{
+		"_id": "carte:20",
+		"cue": "Invention de la Bière",
+		"show": "Bière",
+		"rep": "-4000"
+	},
+	{
+		"_id": "carte:21",
+		"cue": "Invention de l'Écriture",
+		"show": "Écriture",
+		"rep": "-3500"
+	},
+	{
+		"_id": "carte:22",
+		"cue": "Invention du Ciment",
+		"show": "Ciment",
+		"rep": "-2600"
+	},
+	{
+		"_id": "carte:23",
+		"cue": "Invention du Verre",
+		"show": "Verre",
+		"rep": "-2500"
+	},
+	{
+		"_id": "carte:24",
+		"cue": "Construction des Pyramides de Gizeh",
+		"show": "Gizeh",
+		"rep": "-2700"
+	},
+	{
+		"_id": "carte:25",
+		"cue": "Invention du Char",
+		"show": "Char",
+		"rep": "-2000"
+	},
+	{
+		"_id": "carte:26",
+		"cue": "Premiers Ojets en Fer",
+		"show": "Fer",
+		"rep": "-2750"
+	},
+	{
+		"_id": "carte:27",
+		"cue": "Premier Livre",
+		"show": "Livre",
+		"rep": "-2500"
+	},
+	{
+		"_id": "carte:28",
+		"cue": "Premières Navigations en Haute-mer",
+		"show": "Navigation",
+		"rep": "-55000"
+	},
+	{
+		"_id": "carte:29",
+		"cue": "Invention de la Corde",
+		"show": "Corde",
+		"rep": "-25000"
+	},
+	{
+		"_id": "carte:30",
+		"cue": "Domestication du Chien",
+		"show": "Chien",
+		"rep": "-26000"
+	},
+	{
+		"_id": "carte:31",
+		"cue": "Maîtrise de l'Apiculure",
+		"show": "Apiculture",
+		"rep": "-1425"
+	},
+	{
+		"_id": "carte:32",
+		"cue": "Invention du Clepsydre",
+		"show": "Clepsydre",
+		"rep": "-1400"
+	},
+	{
+		"_id": "carte:33",
+		"cue": "Invention du Savon",
+		"show": "Savon",
+		"rep": "-1000"
+	},
+	{
+		"_id": "carte:34",
+		"cue": "Premières Cultures du Riz",
+		"show": "Riz",
+		"rep": "-1000"
+	},
+	{
+		"_id": "carte:35",
+		"cue": "Premières Cultures du Blé",
+		"show": "Blé",
+		"rep": "-9000"
+	},
+	{
+		"_id": "carte:36",
+		"cue": "Domestication du Chameau",
+		"show": "Chameau",
+		"rep": "-800"
+	},
+	{
+		"_id": "carte:37",
+		"cue": "Premiers Jeux Olympiques",
+		"show": "Jeux Olympiques",
+		"rep": "-776"
+	},
+	{
+		"_id": "carte:38",
+		"cue": "Fondation de Rome",
+		"show": "Rome",
+		"rep": "-753"
+	},
+	{
+		"_id": "carte:39",
+		"cue": "Premières Cultures du Coton",
+		"show": "Coton",
+		"rep": "-700"
+	},
+	{
+		"_id": "carte:40",
+		"cue": "Invention des Monnaies Métalliques",
+		"show": "Monnaie",
+		"rep": "-675"
+	},
+	{
+		"_id": "carte:41",
+		"cue": "Invention de la Voûte",
+		"show": "Voûte",
+		"rep": "-470"
+	},
+	{
+		"_id": "carte:42",
+		"cue": "Naissance de Thalès",
+		"show": "Thalès",
+		"rep": "-585"
+	},
+	{
+		"_id": "carte:43",
+		"cue": "Invention de la Catapulte",
+		"show": "Catapulte",
+		"rep": "-500"
+	},
+	{
+		"_id": "carte:44",
+		"cue": "Invention du Diagnostic Médical",
+		"show": "Diagnostic Médical",
+		"rep": "-400"
+	},
+	{
+		"_id": "carte:45",
+		"cue": "Naissance d'Aristote",
+		"show": "Aristote",
+		"rep": "-384"
+	},
+	{
+		"_id": "carte:46",
+		"cue": "Achèvement de la Muraille de Chine",
+		"show": "Muraille de Chine",
+		"rep": "-217"
+	},
+	{
+		"_id": "carte:47",
+		"cue": "Invention du Papier",
+		"show": "Papier",
+		"rep": "-300"
+	},
+	{
+		"_id": "carte:48",
+		"cue": "Invention de l'Orgue",
+		"show": "Orgue",
+		"rep": "-270"
+	},
+	{
+		"_id": "carte:49",
+		"cue": "Construction du Phare d'Alexandrie",
+		"show": "Phare d'Alexandrie",
+		"rep": "-280"
+	},
+	{
+		"_id": "carte:50",
+		"cue": "Adoption du Calendrier Julien",
+		"show": "Calendrier Julien",
+		"rep": "-45"
+	},
+	{
+		"_id": "carte:51",
+		"cue": "Première Machine à Calculer (Éclipse)",
+		"show": "Machine à Calculer",
+		"rep": "-87"
+	},
+	{
+		"_id": "carte:52",
+		"cue": "Naissance de Confucius",
+		"show": "Confucius",
+		"rep": "-551"
+	},
+	{
+		"_id": "carte:53",
+		"cue": "Fondation de la Bibliothèque d'Alexandrie",
+		"show": "Bibliothèque d'Alexandrie",
+		"rep": "-305"
+	},
+	{
+		"_id": "carte:54",
+		"cue": "Invention de l'Engrenage",
+		"show": "Engrenage",
+		"rep": "-220"
+	},
+	{
+		"_id": "carte:55",
+		"cue": "Invention de la Sidérurgie",
+		"show": "Sidérurgie",
+		"rep": "1722"
+	},
+	{
+		"_id": "carte:56",
+		"cue": "Premières production d'Acier",
+		"show": "Acier",
+		"rep": "-350"
+	},
+	{
+		"_id": "carte:57",
+		"cue": "Invention de l'Araire",
+		"show": "Araire",
+		"rep": "-3000"
+	},
+	{
+		"_id": "carte:58",
+		"cue": "Invention de la Charrue",
+		"show": "Charrue",
+		"rep": "0"
+	},
+	{
+		"_id": "carte:59",
+		"cue": "Invention de la Poudre",
+		"show": "Poudre",
+		"rep": "85"
+	},
+	{
+		"_id": "carte:60",
+		"cue": "Invention du Mors",
+		"show": "Mors",
+		"rep": "-1000"
+	},
+	{
+		"_id": "carte:61",
+		"cue": "Invention de la Porcelaine",
+		"show": "Porcelaine",
+		"rep": "450"
+	},
+	{
+		"_id": "carte:62",
+		"cue": "Invention de l'Égout",
+		"show": "Égout",
+		"rep": "-2500"
+	},
+	{
+		"_id": "carte:63",
+		"cue": "Invention de la Soudure du Fer",
+		"show": "Soudure du Fer",
+		"rep": "-500"
+	},
+	{
+		"_id": "carte:64",
+		"cue": "invention du Tatouage",
+		"show": "Tatouage",
+		"rep": "-3400"
+	},
+	{
+		"_id": "carte:65",
+		"cue": "Invention de la Sériculture",
+		"show": "Sériculture",
+		"rep": "-3650"
+	},
+	{
+		"_id": "carte:66",
+		"cue": "Inveention du Papyrus",
+		"show": "Papyrus",
+		"rep": "-3000"
+	},
+	{
+		"_id": "carte:67",
+		"cue": "Invention du Ciseau",
+		"show": "Ciseau",
+		"rep": "-1500"
+	},
+	{
+		"_id": "carte:68",
+		"cue": "Invention du Haut-Fourneau",
+		"show": "Haut-Fourneau",
+		"rep": "-250"
+	},
+	{
+		"_id": "carte:69",
+		"cue": "Invention de l'Astrolabe",
+		"show": "Astrolabe",
+		"rep": "-150"
+	},
+	{
+		"_id": "carte:70",
+		"cue": "Invention du Distributeur Automatique",
+		"show": "Distributeur Automatique",
+		"rep": "60"
+	},
+	{
+		"_id": "carte:71",
+		"cue": "Invention de la Flûte",
+		"show": "Flûte",
+		"rep": "-35000"
+	},
+	{
+		"_id": "carte:72",
+		"cue": "Premières Sépultures",
+		"show": "Sépultures",
+		"rep": "-100000"
+	},
+	{
+		"_id": "carte:73",
+		"cue": "Invention du Pain",
+		"show": "Pain",
+		"rep": "-14500"
+	},
+	{
+		"_id": "carte:74",
+		"cue": "Premiers Vêtements",
+		"show": "Vêtements",
+		"rep": "-170000"
+	},
+	{
+		"_id": "carte:75",
+		"cue": "Premiers Soins Dentaires",
+		"show": "Soins Dentaires",
+		"rep": "-14000"
+	},
+	{
+		"_id": "carte:76",
+		"cue": "Domestication du Mouton",
+		"show": "Mouton",
+		"rep": "-13000"
+	},
+	{
+		"_id": "carte:77",
+		"cue": "Invention de l'Escalier en Spirale",
+		"show": "Escalier en Spirale",
+		"rep": "-480"
+	},
+	{
+		"_id": "carte:78",
+		"cue": "Invention de la Grue",
+		"show": "Grue",
+		"rep": "-515"
+	},
+	{
+		"_id": "carte:79",
+		"cue": "Invention du Séismomètre",
+		"show": "Séismomètre",
+		"rep": "132"
+	},
+	{
+		"_id": "carte:80",
+		"cue": "Invention de l'Allumette",
+		"show": "Allumette",
+		"rep": "577"
+	},
+	{
+		"_id": "carte:81",
+		"cue": "Invention du Papier Toilette",
+		"show": "Papier Toilette",
+		"rep": "589"
+	},
+	{
+		"_id": "carte:82",
+		"cue": "Invention de l'Imprimerie",
+		"show": "Imprimerie",
+		"rep": "700"
+	},
+	{
+		"_id": "carte:83",
+		"cue": "Invention de le Grenade",
+		"show": "Grenade",
+		"rep": "1231"
+	},
+	{
+		"_id": "carte:84",
+		"cue": "Invention du Miroir (Cuivre)",
+		"show": "Miroir (Cuivre)",
+		"rep": "-4000"
+	},
+	{
+		"_id": "carte:85",
+		"cue": "Invention du Miroir (Verre)",
+		"show": "Miroir (Verre)",
+		"rep": "1250"
+	},
+	{
+		"_id": "carte:86",
+		"cue": "Invention des Lunettes",
+		"show": "Lunettes",
+		"rep": "1285"
+	},
+	{
+		"_id": "carte:87",
+		"cue": "Invention de l'Horloge Mécanique",
+		"show": "Horloge Mécanique",
+		"rep": "1320"
+	},
+	{
+		"_id": "carte:88",
+		"cue": "Invention de l'Arquebuse",
+		"show": "Arquebuse",
+		"rep": "1450"
+	},
+	{
+		"_id": "carte:89",
+		"cue": "Naissance de Léonard de Vinci",
+		"show": "Léonard de Vinci",
+		"rep": "1452"
+	},
+	{
+		"_id": "carte:90",
+		"cue": "Invention du Parachute",
+		"show": "Parachute",
+		"rep": "1500"
+	},
+	{
+		"_id": "carte:91",
+		"cue": "Naissance Magellan",
+		"show": "Magellan",
+		"rep": "1480"
+	},
+	{
+		"_id": "carte:92",
+		"cue": "Invention de la Lunette Astronomique",
+		"show": "Lunette Astronomique",
+		"rep": "1590"
+	},
+	{
+		"_id": "carte:93",
+		"cue": "Découverte de l'Amérique",
+		"show": "Amérique",
+		"rep": "-100"
+	},
+	{
+		"_id": "carte:94",
+		"cue": "Invention du Baromètre",
+		"show": "Baromètre",
+		"rep": "1643"
+	},
+	{
+		"_id": "carte:95",
+		"cue": "Invention du Thermomètre",
+		"show": "Thermomètre",
+		"rep": "1718"
+	},
+	{
+		"_id": "carte:96",
+		"cue": "Invention de la Machine à Vapeur",
+		"show": "Machine à Vapeur",
+		"rep": "1698"
+	},
+	{
+		"_id": "carte:97",
+		"cue": "Invention de la Montgolfière",
+		"show": "Montgolfière",
+		"rep": "1780"
+	},
+	{
+		"_id": "carte:98",
+		"cue": "Invention de la Machine à Écrire",
+		"show": "Machine à Écrire",
+		"rep": "1712"
+	},
+	{
+		"_id": "carte:99",
+		"cue": "Invention de l'Éclairage au Gaz",
+		"show": "Éclairage au Gaz",
+		"rep": "1792"
+	},
+	{
+		"_id": "carte:100",
+		"cue": "Invention de la Pile Électrique",
+		"show": "Pile Électrique",
+		"rep": "1800"
+	}
+]
