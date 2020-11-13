@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <h1>Signup will be here</h1>
+
+    <form method="post" target="_self">
+        <label for="username">Nom d'utilisateur : </label><input name="username" id="username" type="text" placeholder="Nom d'utilisateur"><span></span>
+        <label for="email">Adresse courriel : </label><input name="email" id="email" type="email" placeholder="exemple@seraphii.me">
+        <label for="password">Mot de passe : </label><input name="password" id="password" type="password" placeholder="Mot de passe">
+        <label for="confPwd">Confirmez le mot de passe : </label><input name="confPwd" id="confPwd" type="password" placeholder="Mot de passe">
+        <input type="submit" value="S'inscrire">
+    </form>
+</main>
+
+</body>
+</html>
