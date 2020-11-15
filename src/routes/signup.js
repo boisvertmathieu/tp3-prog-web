@@ -24,11 +24,6 @@ router.post('/', function (req, res, next) {
 		'confPwd' : confPwd
 	};
 
-	if(password != confPwd || password.isEmpty()){
-		errPwd = "Erreur dans les champs de mot de passe.";
-		valid = false;
-	}
-
 	res.send(user);
 });
 
