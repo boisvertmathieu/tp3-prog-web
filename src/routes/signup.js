@@ -33,13 +33,6 @@ router.post('/', function (req, res, next) {
  */
 
 const {check, validationResult, matchedData} = require('express-validator');
-exports.verifyPasswordsMatch = (req, res, next) => {
-    const confirmPassword = req.body.confPwd.trim();
-
-    return check('password')
-        .withMessage('Password is required and both of them must be identical')
-        .equals(confirmPassword)
-}
 router.post('/', [
     check('username')
         .not().isEmpty()
@@ -74,8 +67,8 @@ router.post('/', [
     const data = matchedData(req);
     console.log('Sanitized: ', data);
 
-    req.flash('Success', 'Thanks for the message! I\'ll be in touche :)');
-    res.redirect('/users');
+    req.flash('success', 'Thanks for the message! I\'ll be in touche :)');
+    res.redirect('/home');
 
 
 });

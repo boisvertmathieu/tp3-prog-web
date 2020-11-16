@@ -41,6 +41,7 @@ app.use(middlewares);
 // routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/home', usersRouter);
 app.use('/inscription', signupRouter);
 
 
