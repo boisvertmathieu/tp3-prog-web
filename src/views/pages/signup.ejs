@@ -13,25 +13,37 @@
     <h1>Signup will be here</h1>
     <% if (Object.keys(errors).length === 0) { %>
         <h2>Formulaire d'inscription</h2>
+        <hr/>
     <% } else { %>
+        <hr/>
         <h2>Svp, corrigez ces erreurs: </h2>
-        <ul>
-            <% Object.values(errors).forEach(error => { %>
-            <li><%= error.msg %></li>
-            <% }) %>
-        </ul>
     <% } %>
     <form method="post" action="/inscription" novalidate>
-        <label for="username">Nom d'utilisateur : </label><input name="username" id="username" type="text" placeholder="Nom d'utilisateur" value="<%=data.username%>"><span></span>
-        <% if (errors.username) { %>
-            <div class="error"><%= errors.username.msg %></div>
-        <% } %>
-        <label for="email">Adresse courriel : </label><input name="email" id="email" type="email" placeholder="exemple@seraphii.me" value="<%=data.email%>">
-        <% if (errors.email) { %>
-            <div class="error"><%= errors.email.msg %></div>
-        <% } %>
-        <label for="password">Mot de passe : </label><input name="password" id="password" type="password" placeholder="Mot de passe">
-        <label for="confPwd">Confirmez le mot de passe : </label><input name="confPwd" id="confPwd" type="password" placeholder="Mot de passe">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur : </label><input name="username" id="username" type="text"
+                                                                     placeholder="Nom d'utilisateur"
+                                                                     value="<%= data.username %>"><span></span>
+            <% if (errors.username) { %>
+                <div class="error"><%= errors.username.msg %></div>
+            <% } %>
+        </div>
+        <div class="form-group">
+            <label for="email">Adresse courriel : </label><input name="email" id="email" type="email"
+                                                                 placeholder="exemple@seraphii.me"
+                                                                 value="<%= data.email %>">
+            <% if (errors.email) { %>
+                <div class="error"><%= errors.email.msg %></div>
+            <% } %>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe : </label><input name="password" id="password" type="password"
+                                                                placeholder="Mot de passe">
+            <label for="confPwd">Confirmez le mot de passe : </label><input name="confPwd" id="confPwd" type="password"
+                                                                            placeholder="Mot de passe">
+            <% if (errors.password) { %>
+                <div class="error"><%= errors.password.msg %></div>
+            <% } %>
+        </div>
         <input type="submit" value="S'inscrire">
     </form>
 

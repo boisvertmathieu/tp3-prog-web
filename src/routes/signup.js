@@ -33,26 +33,51 @@ router.post('/', function (req, res, next) {
  */
 
 const {check, validationResult, matchedData} = require('express-validator');
+exports.verifyPasswordsMatch = (req, res, next) => {
+    const confirmPassword = req.body.confPwd.trim();
+
+    return check('password')
+        .withMessage('Password is required and both of them must be identical')
+        .equals(confirmPassword)
+}
 router.post('/', [
     check('username')
         .not().isEmpty()
         .withMessage('Username is required')
         .trim(),
-    check('email')
+    check('email', 'Email must be an email and is required')
+        .not().isEmpty()
         .isEmail()
-        .withMessage('Email must be an email and is required')
         .bail()
         .trim()
-        .normalizeEmail()
-], (req, res) => {
+        .normalizeEmail(),
+    check('password', 'Password is required and both of them must be identical')
+        .not().isEmpty()
+        .withMessage('Password is required and both of them must be identical')
+        .custom((value, { req }) => {
+            if (value !== req.body.confPwd) {
+                throw new Error('Password is invalid. Both must match.');
+            }
+            return true;
+        })
+], (req, res, next) => {
     const errors = validationResult(req);
-    res.render('signup', {
-        data: req.body,
-        errors: errors.mapped()
-    });
+
+    // Validation de la présence d'erreurs lors de la validation du formulaire
+    if (!errors.isEmpty()) {
+        return res.render('signup', {
+            data: req.body,
+            errors: errors.mapped()
+        });
+    }
 
     const data = matchedData(req);
-    console.log('Sanitized:', data);
+    console.log('Sanitized: ', data);
+
+    req.flash('Success', 'Thanks for the message! I\'ll be in touche :)');
+    res.redirect('/users');
+
+
 });
 
 module.exports = router;
