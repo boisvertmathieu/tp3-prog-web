@@ -5,16 +5,32 @@
 </head>
 <body class="container">
 
-<header>
-    <%- include('../partials/header'); %>
-</header>
-
 <main>
-    <div class="jumbotron">
-        <h1>This is great</h1>
-        <p>Welcome to templating using EJS</p>
-
-        <a href="/inscription"></a>
+    <div class="container">
+        <h1>Connexion</h1>
+        <div class="jumbotron">
+            <form method="post" action="/index" novalidate>
+                <!-- CSRF Token -->
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <div class="form-group">
+                    <label for="email">Adresse courriel : </label>
+                    <input name="email" id="email" type="email"
+                           placeholder="exemple@seraphii.me">
+                    <% if (errors.email) { %>
+                        <div class="error"><%= errors.email.msg %></div>
+                    <% } %>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe : </label>
+                    <input name="password" id="password" type="password"
+                           placeholder="Mot de passe">
+                </div>
+                <input type="submit" value="Se connecter">
+            </form>
+        </div>
+        <hr/>
+        <p>Vous n'avez pas de compte?</p>
+        <a href="/inscription">Inscrivez-vous</a>
     </div>
 </main>
 

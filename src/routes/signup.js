@@ -8,7 +8,7 @@ const csrfProtection = csrf({cookie: true});
 
 
 /* GET home page. */
-router.get('/', function (req, res, next) {
+router.get('/', csrfProtection, (req, res) => {
     res.render('signup', {
         data: {},
         errors: {},
@@ -38,7 +38,7 @@ router.post('/', function (req, res, next) {
 });
  */
 
-router.post('/', [
+router.post('/', csrfProtection, [
     check('username')
         .not().isEmpty()
         .withMessage('Username is required')
@@ -51,7 +51,6 @@ router.post('/', [
         .normalizeEmail(),
     check('password', 'Password is required and both of them must be identical')
         .not().isEmpty()
-        .withMessage('Password is required and both of them must be identical')
         .custom((value, { req }) => {
             if (value !== req.body.confPwd) {
                 throw new Error('Password is invalid. Both must match.');

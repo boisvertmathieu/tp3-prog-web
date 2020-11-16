@@ -4,20 +4,21 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var database = require('./src/database');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('express-flash');
 
+// Routers
 var indexRouter = require('./src/routes/index');
 var usersRouter = require('./src/routes/users');
 var signupRouter = require('./src/routes/signup');
+var homeRouter = require('./src/routes/home');
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '/src/views/pages'));
 app.set('view engine', 'ejs');
-
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('express-flash');
 
 //middlewares
 const middlewares = [
@@ -26,6 +27,7 @@ const middlewares = [
     express.json(),
     express.urlencoded({extended: false}),
     express.static(path.join(__dirname, '/src/public')),
+    cookieParser(),
     logger('dev'),
     session({
       secret: 'super-secret-key',
@@ -41,7 +43,7 @@ app.use(middlewares);
 // routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/home', usersRouter);
+app.use('/home', homeRouter);
 app.use('/inscription', signupRouter);
 
 
