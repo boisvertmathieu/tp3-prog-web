@@ -19,6 +19,8 @@
         <h2>Svp, corrigez ces erreurs: </h2>
     <% } %>
     <form method="post" action="/inscription" novalidate>
+        <!-- CSRF Token -->
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <div class="form-group">
             <label for="username">Nom d'utilisateur : </label><input name="username" id="username" type="text"
                                                                      placeholder="Nom d'utilisateur"

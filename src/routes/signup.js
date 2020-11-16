@@ -2,12 +2,18 @@ let express = require('express');
 let router = express.Router();
 let validator = require('validator');
 const Utilisateur = require('../models/utilisateurSchema');
+const {check, validationResult, matchedData} = require('express-validator');
+const csrf = require('csurf');
+const csrfProtection = csrf({cookie: true});
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
     res.render('signup', {
         data: {},
-        errors: {}
+        errors: {},
+        //CSRF token generation
+        csrfToken: req.csrfToken()
     });
 });
 
@@ -32,7 +38,6 @@ router.post('/', function (req, res, next) {
 });
  */
 
-const {check, validationResult, matchedData} = require('express-validator');
 router.post('/', [
     check('username')
         .not().isEmpty()
@@ -60,7 +65,8 @@ router.post('/', [
     if (!errors.isEmpty()) {
         return res.render('signup', {
             data: req.body,
-            errors: errors.mapped()
+            errors: errors.mapped(),
+            csrfToken: req.csrfToken()
         });
     }
 
