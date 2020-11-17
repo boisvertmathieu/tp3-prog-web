@@ -5,6 +5,7 @@ const Utilisateur = require('../models/utilisateurSchema');
 const {check, validationResult, matchedData} = require('express-validator');
 const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});
+const bcrypt = require('bcrypt')
 
 
 /* GET home page. */
@@ -69,8 +70,41 @@ router.post('/', csrfProtection, [
         });
     }
 
+
     const data = matchedData(req);
     console.log('Sanitized: ', data);
+
+    //TODO : Ajouter le user à la database
+    let saltRounds = 10; //Number of hashing rounds done on string
+    bcrypt.genSalt(saltRounds, (err, salt) => {
+        bcrypt.hash(data['password'], salt, (err, hash) => {
+            if(err) {
+                console.log(err);
+                return handleError(err);
+            } else {
+                //Storing user and hashed password to db
+                let user = new Utilisateur ({
+                    username: data['username'],
+                    email: data['email'],
+                    password: hash,
+                    isAdmin: false
+                }); //Enlève l'attribut _v ajouté au model lors de l'insertion
+
+                //Saving model instance, passing a callback
+                user.save(function (err) {
+                    if (err) {
+                        console.log(err);
+                        res.status(500);
+                        res.render('signup', {
+                            data: data,
+                            errors: err,
+                            csrfToken : req.csrfToken()
+                        })
+                    }
+                })
+            }
+        });
+    });
 
     req.flash('success', 'Thanks for the message! I\'ll be in touche :)');
     res.redirect('/home');

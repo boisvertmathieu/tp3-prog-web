@@ -1,5 +1,7 @@
 let express = require('express');
 let router = express.Router();
+const mongoose = require('mongoose')
+const UtilisateurSchema = require('../models/utilisateurSchema');
 const {check, validationResult, matchedData} = require('express-validator');
 const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});
@@ -23,12 +25,26 @@ router.post('/index',  csrfProtection, [
         .normalizeEmail(),
     check('password', 'Password is required')
         .not().isEmpty()
-    //.custom() --- Valider si le mot de passe entré correspond au email dans la bd
+        .custom((value, {req}) => {
+            let user = mongoose.model('Utilisateur', UtilisateurSchema, 'utilisateurs');
+            user.find({'email' : req.body.email.trim()}, 'email password', function (err, users) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                /**
+                 * users contient la liste des utilisateurs correspondant à l'email entré
+                 * Le user.find retourne tous les utilisateurs ayant le même email, et leurs password
+                 */
+                console.log(user)
+            })
+        })
 ], (req, res) => {
     const errors = validationResult(req);
 
     // Validation de la présence d'erreurs lors de la validation du formulaire
     if (!errors.isEmpty()) {
+        console.log(errors)
         return res.render('index', {
             data: req.body,
             errors: errors.mapped(),

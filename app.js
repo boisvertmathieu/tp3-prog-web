@@ -40,6 +40,7 @@ const middlewares = [
 ];
 app.use(middlewares);
 
+// TODO : Les routes ont l'air mêlante mais fonctionne. Si tu vois le besoin de faire un 'cleanup' go ahead
 // routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
