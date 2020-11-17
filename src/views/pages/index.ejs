@@ -25,12 +25,16 @@
                     <input name="password" id="password" type="password"
                            placeholder="Mot de passe">
                 </div>
+                <% if (errors.password) { %>
+                    <div class="error"><%= errors.password.msg %></div>
+                <% } %>
                 <input type="submit" value="Se connecter">
             </form>
         </div>
         <hr/>
         <p>Vous n'avez pas de compte?</p>
         <a href="/inscription">Inscrivez-vous</a>
+
     </div>
 </main>
 

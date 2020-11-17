@@ -1,17 +1,18 @@
 let express = require('express');
 let router = express.Router();
-const mongoose = require('mongoose')
 const Utilisateur = require('../models/utilisateurSchema');
 const {check, validationResult, matchedData} = require('express-validator');
 const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});
 const bcrypt = require('bcrypt');
+const jsw = require('jsonwebtoken');
 
 /* Page d'accueil de connexion */
 router.get('/', csrfProtection, (req, res) => {
+    const errors = validationResult(req);
     res.render('index', {
         data: {},
-        errors: {},
+        errors: errors.mapped(),
         csrfToken: req.csrfToken()
     });
 });
@@ -43,16 +44,32 @@ router.post('/index', csrfProtection, [
 
     // Validation des identifiants entrés
     try {
-        let user = await Utilisateur.Model.findOne({email:req.body.email}).exec();
+        let user = await Utilisateur.Model.findOne({email: req.body.email}).exec();
         // Aucune user correspondant aux identifiants trouvés
         if (!user) {
-            return res.status(400).send({message: "Aucune utilisateur ne correspond au courriel entré"})
+            return res.render('index', {
+                data: req.body,
+                errors: {
+                    email: {
+                        msg: 'Email is invalid'
+                    }
+                },
+                csrfToken: req.csrfToken()
+            });
         }
         if (!bcrypt.compareSync(req.body.password, user.password)) {
-            return res.status(400).send({message: "Mauvais mot de passe"})
+            return res.render('index', {
+                data: req.body,
+                errors: {
+                    password: {
+                        msg: 'Password is invalid'
+                    }
+                },
+                csrfToken: req.csrfToken()
+            });
         }
     } catch (error) {
-        res.status(500).send(error);
+        return res.status(500).send(error);
     }
 
     // TODO : Utiliser une session au lieu d'un req.flash. Dès que l'utilisateur quitte /home la variable success n'est plus reconnue
