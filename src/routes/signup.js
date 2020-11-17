@@ -58,8 +58,9 @@ router.post('/', csrfProtection, [
             }
             return true;
         })
-], (req, res, next) => {
+], async (req, res, next) => {
     const errors = validationResult(req);
+    console.log(errors);
 
     // Validation de la présence d'erreurs lors de la validation du formulaire
     if (!errors.isEmpty()) {
@@ -69,46 +70,49 @@ router.post('/', csrfProtection, [
             csrfToken: req.csrfToken()
         });
     }
-
-
     const data = matchedData(req);
     console.log('Sanitized: ', data);
 
-    //TODO : Ajouter le user à la database
-    let saltRounds = 10; //Number of hashing rounds done on string
-    bcrypt.genSalt(saltRounds, (err, salt) => {
-        bcrypt.hash(data['password'], salt, (err, hash) => {
-            if(err) {
-                console.log(err);
-                return handleError(err);
-            } else {
-                //Storing user and hashed password to db
-                let user = new Utilisateur ({
-                    username: data['username'],
-                    email: data['email'],
-                    password: hash,
-                    isAdmin: false
-                }); //Enlève l'attribut _v ajouté au model lors de l'insertion
-
-                //Saving model instance, passing a callback
-                user.save(function (err) {
-                    if (err) {
-                        console.log(err);
-                        res.status(500);
-                        res.render('signup', {
-                            data: data,
-                            errors: err,
-                            csrfToken : req.csrfToken()
-                        })
+    //TODO : Valider si un user avec ce email exite déjà avant l'ajout
+    try {
+        // Recherche de si un user existe déjà avec ce courriel
+        let user = await Utilisateur.Model.findOne({email: req.body.email}).exec();
+        if (!user) {
+            // Aucun user avec ce email, création du user
+            let hash = bcrypt.hashSync(req.body.password, 10);
+            let user = new Utilisateur.Model ({
+                username : req.body.username,
+                email: req.body.email,
+                password: hash,
+                isAdmin: false
+            });
+            // Ajout du user
+            user.save();
+            req.flash('success', 'Thanks for the message! I\'ll be in touche :)');
+            return res.redirect('/home');
+        } else {
+            res.render('signup', {
+                data: req.body,
+                // TODO : Les erreurs ne s'affichent pas
+                errors: [
+                    {
+                        value: req.body.email,
+                        msg: 'Email is already being user by another user',
+                        param: 'email',
+                        localtion: 'body',
                     }
-                })
-            }
-        });
-    });
+                ],
+                csrfToken: req.csrfToken()
+            })
+        }
 
-    req.flash('success', 'Thanks for the message! I\'ll be in touche :)');
-    res.redirect('/home');
+    } catch (errors) {
+        return res.status(500).send(errors);
+    }
 
+    /**
+     * TODO : Ajouter une session. Dès que le user quitte la page home il n'est plus connecté parce que req.flash('success') n'existe plus
+     */
 
 });
 

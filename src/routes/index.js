@@ -1,10 +1,11 @@
 let express = require('express');
 let router = express.Router();
 const mongoose = require('mongoose')
-const UtilisateurSchema = require('../models/utilisateurSchema');
+const Utilisateur = require('../models/utilisateurSchema');
 const {check, validationResult, matchedData} = require('express-validator');
 const csrf = require('csurf');
 const csrfProtection = csrf({cookie: true});
+const bcrypt = require('bcrypt');
 
 /* Page d'accueil de connexion */
 router.get('/', csrfProtection, (req, res) => {
@@ -16,7 +17,7 @@ router.get('/', csrfProtection, (req, res) => {
 });
 
 /* Est appelé lorsque le fomulaire de connexion est envoyé */
-router.post('/index',  csrfProtection, [
+router.post('/index', csrfProtection, [
     check('email', 'Email must be an email and is required')
         .not().isEmpty()
         .isEmail()
@@ -25,21 +26,7 @@ router.post('/index',  csrfProtection, [
         .normalizeEmail(),
     check('password', 'Password is required')
         .not().isEmpty()
-        .custom((value, {req}) => {
-            let user = mongoose.model('Utilisateur', UtilisateurSchema, 'utilisateurs');
-            user.find({'email' : req.body.email.trim()}, 'email password', function (err, users) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                /**
-                 * users contient la liste des utilisateurs correspondant à l'email entré
-                 * Le user.find retourne tous les utilisateurs ayant le même email, et leurs password
-                 */
-                console.log(user)
-            })
-        })
-], (req, res) => {
+], async (req, res) => {
     const errors = validationResult(req);
 
     // Validation de la présence d'erreurs lors de la validation du formulaire
@@ -54,6 +41,21 @@ router.post('/index',  csrfProtection, [
     const data = matchedData(req);
     console.log('Sanitized: ', data);
 
+    // Validation des identifiants entrés
+    try {
+        let user = await Utilisateur.Model.findOne({email:req.body.email}).exec();
+        // Aucune user correspondant aux identifiants trouvés
+        if (!user) {
+            return res.status(400).send({message: "Aucune utilisateur ne correspond au courriel entré"})
+        }
+        if (!bcrypt.compareSync(req.body.password, user.password)) {
+            return res.status(400).send({message: "Mauvais mot de passe"})
+        }
+    } catch (error) {
+        res.status(500).send(error);
+    }
+
+    // TODO : Utiliser une session au lieu d'un req.flash. Dès que l'utilisateur quitte /home la variable success n'est plus reconnue
     req.flash('success', 'Thanks for the message! I\'ll be in touch :)');
     res.redirect('/home');
 });

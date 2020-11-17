@@ -28,4 +28,7 @@ const UtilisateurSchema =  new Schema({
     }
 }, {versionKey: false}); //Enlève l'attribut _v ajouté au model lors de l'insertion
 
-module.exports = mongoose.model('Utilisateur', UtilisateurSchema);
+let Utilisateur = mongoose.model('Utilisateur', UtilisateurSchema);
+
+module.exports.Schema = UtilisateurSchema;
+module.exports.Model = Utilisateur;
