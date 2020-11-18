@@ -1,24 +1,41 @@
 GET http://localhost:3000/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2YxOTA2MjA0N2Q3ZDc5ODQ5NDA0IiwidXNlcm5hbWUiOiJwYXVsZXR0ZSIsImVtYWlsIjoicGF1bGV0dGVAZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMTAkSzU5Sk16MG1MYVMyZXpuTW1wVFg1T2QweGtaY0s5bEFaU1ljTlZ1MHp4UVVBem9KQnc0M1ciLCJpYXQiOjE2MDU3MzQxNzh9.z15xupR2T9m3yDafE7JRR6CiuL9ZPrXwC0v2UgJX3iI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiNTkyNTY5NzhmYzA0ZjBlYzc1ZGE0IiwidXNlcm5hbWUiOiJib2IiLCJlbWFpbCI6ImJvYkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRXRm5LdmM1dFF4R3Q0aUN2QkVwRGV1eGZiWHE1eEFYTWxmSE53a2NFVVlIYkZwbXEzeDFieSIsImlhdCI6MTYwNTczNzA4OCwiZXhwIjoxNjA1NzM3MTAzfQ.hm9s1F2urNqnr8EkzA4cIXiQK47quCVZi-T9zSj4BQ4
 
 ###
 
-POST http://localhost:3000/index
+GET http://localhost:4000/login
+
+###
+
+POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-  "email": "paulette@gmail.com",
+  "email": "bob@gmail.com",
   "password": "gamer"
 }
 
 ###
 
-POST http://localhost:3000/inscription
+POST http://localhost:4000/login/token
 Content-Type: application/json
 
 {
-    "username":"tabarnak",
-    "email": "tabarnak@gmail.com",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiNTkyNTY5NzhmYzA0ZjBlYzc1ZGE0IiwidXNlcm5hbWUiOiJib2IiLCJlbWFpbCI6ImJvYkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRXRm5LdmM1dFF4R3Q0aUN2QkVwRGV1eGZiWHE1eEFYTWxmSE53a2NFVVlIYkZwbXEzeDFieSIsImlhdCI6MTYwNTczNzE5NX0.N7BSTLjcUYD9c51Cm4F6YLGwSfJv19rrNVv9Nb4CJes"
+}
+
+###
+
+GET http://localhost:4000/inscription
+
+###
+
+POST http://localhost:4000/inscription
+Content-Type: application/json
+
+{
+    "username":"jean",
+    "email": "jean@gmail.com",
     "password":"gamer",
     "confPwd":"gamer"
 }
