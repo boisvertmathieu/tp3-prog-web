@@ -1,20 +1,22 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var database = require('./src/database');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const database = require('./src/database');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 
-// Routers
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
-var signupRouter = require('./src/routes/signup');
-var homeRouter = require('./src/routes/home');
+require('dotenv').config(); // For secret token access in .env file
 
-var app = express();
+// Routers
+const indexRouter = require('./src/routes/index');
+const usersRouter = require('./src/routes/users');
+const signupRouter = require('./src/routes/signup');
+const homeRouter = require('./src/routes/home');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '/src/views/pages'));
@@ -43,8 +45,8 @@ app.use(middlewares);
 // TODO : Les routes ont l'air mêlante mais fonctionne. Si tu vois le besoin de faire un 'cleanup' go ahead
 // routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/home', homeRouter);
+app.use('/users', usersRouter);
 app.use('/inscription', signupRouter);
 
 
