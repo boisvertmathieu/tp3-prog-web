@@ -1,30 +1,40 @@
 GET http://localhost:3000/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiNTkyNTY5NzhmYzA0ZjBlYzc1ZGE0IiwidXNlcm5hbWUiOiJib2IiLCJlbWFpbCI6ImJvYkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRXRm5LdmM1dFF4R3Q0aUN2QkVwRGV1eGZiWHE1eEFYTWxmSE53a2NFVVlIYkZwbXEzeDFieSIsImlhdCI6MTYwNTczNzA4OCwiZXhwIjoxNjA1NzM3MTAzfQ.hm9s1F2urNqnr8EkzA4cIXiQK47quCVZi-T9zSj4BQ4
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMjE2LCJleHAiOjE2MDU3NDAyNDZ9.70dlkbkRmqPF1tvottY_yKkhUbewBg-CbBviLXmPMXQ
 
-###
+### LOGIN
 
 GET http://localhost:4000/login
 
-###
+### 
 
 POST http://localhost:4000/login
 Content-Type: application/json
 
 {
-  "email": "bob@gmail.com",
+  "email": "paul@gmail.com",
   "password": "gamer"
 }
 
-###
+### REFRESH TOKEN
 
 POST http://localhost:4000/login/token
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiNTkyNTY5NzhmYzA0ZjBlYzc1ZGE0IiwidXNlcm5hbWUiOiJib2IiLCJlbWFpbCI6ImJvYkBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQxMCRXRm5LdmM1dFF4R3Q0aUN2QkVwRGV1eGZiWHE1eEFYTWxmSE53a2NFVVlIYkZwbXEzeDFieSIsImlhdCI6MTYwNTczNzE5NX0.N7BSTLjcUYD9c51Cm4F6YLGwSfJv19rrNVv9Nb4CJes"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMjE2fQ.QIoYpAITczVjfF1Wi17BLTQg4F2sGvaGc23s8QF2jJE"
 }
 
-###
+
+### LOGOUT
+
+DELETE http://localhost:4000/logout
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMjE2fQ.QIoYpAITczVjfF1Wi17BLTQg4F2sGvaGc23s8QF2jJE"
+}
+
+### SIGN UP
 
 GET http://localhost:4000/inscription
 

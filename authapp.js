@@ -8,11 +8,9 @@ const database = require('./src/database');
 require('dotenv').config(); // For secret token access in .env file
 
 // Routers
-const indexRouter = require('./src/routes/index');
 const loginRouter = require('./src/routes/login');
-const usersRouter = require('./src/routes/users');
+const logoutRouter = require('./src/routes/logout');
 const signupRouter = require('./src/routes/signup');
-const homeRouter = require('./src/routes/home');
 
 const app = express();
 
@@ -33,6 +31,7 @@ app.use(middlewares);
 // Routes
 app.use('/login', loginRouter);
 app.use('/inscription', signupRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
