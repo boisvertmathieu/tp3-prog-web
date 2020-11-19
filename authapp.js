@@ -1,5 +1,6 @@
-const createError = require('http-errors');
 const express = require('express');
+const app = express();
+const createError = require('http-errors');
 const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
@@ -11,8 +12,6 @@ require('dotenv').config(); // For secret token access in .env file
 const loginRouter = require('./src/routes/login');
 const logoutRouter = require('./src/routes/logout');
 const signupRouter = require('./src/routes/signup');
-
-const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, '/src/views/pages'));

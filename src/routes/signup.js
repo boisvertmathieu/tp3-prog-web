@@ -1,20 +1,19 @@
-let express = require('express');
-let router = express.Router();
-let validator = require('validator');
+const express = require('express');
+const router = express.Router();
 const Utilisateur = require('../models/utilisateurSchema');
-const { check, validationResult, matchedData } = require('express-validator');
-const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 /**
- * Permet de render la page de signup
+ * Called when accessing signup page
  */
 router.get('/', (req, res) => {
 	res.render('signup');
 });
 
+/**
+ * Called when submitting a sign up request (submitting sign up form)
+ */
 router.post('/', async (req, res, next) => {
 	// Validation de l'existe d'un user avec le courriel entré
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
@@ -33,6 +32,8 @@ router.post('/', async (req, res, next) => {
 
 	//Création d'un token
 	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+
+	//Retour du token
 	res.json({ token: token });
 });
 

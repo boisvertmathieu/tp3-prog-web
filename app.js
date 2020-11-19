@@ -11,9 +11,7 @@ const flash = require('express-flash');
 require('dotenv').config(); // For secret token access in .env file
 
 // Routers
-const indexRouter = require('./src/routes/index');
 const usersRouter = require('./src/routes/users');
-const signupRouter = require('./src/routes/signup');
 const homeRouter = require('./src/routes/home');
 
 const app = express();
@@ -32,7 +30,6 @@ const middlewares = [
 ];
 app.use(middlewares);
 
-// TODO : Les routes ont l'air mêlante mais fonctionne. Si tu vois le besoin de faire un 'cleanup' go ahead
 // routes
 app.use('/home', homeRouter);
 app.use('/users', usersRouter);
