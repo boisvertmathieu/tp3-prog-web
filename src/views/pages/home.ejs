@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header'); %>
+</header>
+
+<main>
+    <% if (messages.success) { %>
+        <h1>Vous êtes connecté</h1>
+        <div class="flash flash-success"><%= messages.success %></div>
+        <a href="/">Accueil</a>
+        <a href="/inscription">Inscriptions</a>
+        <% if (messages.results) { %>
+            <% messages.results.forEach(function (message) { %>
+                <p><%= message %></p>
+            <% }); %>
+        <% } %>
+    <% } else { %>
+        <h1>Vous n'êtes pas connecté</h1>
+    <% } %>
+</main>
+
+</body>
+</html>

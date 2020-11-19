@@ -4,17 +4,13 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const database = require('./src/database');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('express-flash');
 
 require('dotenv').config(); // For secret token access in .env file
 
 // Routers
-const indexRouter = require('./src/routes/index');
-const usersRouter = require('./src/routes/users');
+const loginRouter = require('./src/routes/login');
+const logoutRouter = require('./src/routes/logout');
 const signupRouter = require('./src/routes/signup');
-const homeRouter = require('./src/routes/home');
 
 const app = express();
 
@@ -32,10 +28,10 @@ const middlewares = [
 ];
 app.use(middlewares);
 
-// TODO : Les routes ont l'air mêlante mais fonctionne. Si tu vois le besoin de faire un 'cleanup' go ahead
-// routes
-app.use('/home', homeRouter);
-app.use('/users', usersRouter);
+// Routes
+app.use('/login', loginRouter);
+app.use('/inscription', signupRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

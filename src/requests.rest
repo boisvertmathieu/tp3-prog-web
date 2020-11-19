@@ -1,0 +1,51 @@
+GET http://localhost:3000/home
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMzgwLCJleHAiOjE2MDU3NDA0MTB9.dQQlgwqzUMh8k-js9DU8yCXJhOo21TvDBEh9liTnqHw
+
+### LOGIN
+
+GET http://localhost:4000/login
+
+### 
+
+POST http://localhost:4000/login
+Content-Type: application/json
+
+{
+  "email": "paul@gmail.com",
+  "password": "gamer"
+}
+
+### REFRESH TOKEN
+
+POST http://localhost:4000/login/token
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMzgwfQ.wOYITXwI4G1IC_L1LGBt4MitNoivI0Jpo7QzsHwWMTs"
+}
+
+
+### LOGOUT
+
+DELETE http://localhost:4000/logout
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMzgwfQ.wOYITXwI4G1IC_L1LGBt4MitNoivI0Jpo7QzsHwWMTs"
+}
+
+### SIGN UP
+
+GET http://localhost:4000/inscription
+
+###
+
+POST http://localhost:4000/inscription
+Content-Type: application/json
+
+{
+    "username":"jean",
+    "email": "jean@gmail.com",
+    "password":"gamer",
+    "confPwd":"gamer"
+}
