@@ -19,7 +19,7 @@ router.post('/', (req, res) => {
 		if (!bcrypt.compareSync(req.body.password, user.password))
 			return res.json({ success: false, message: 'Password is invalid' });
 
-		let accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
+		let accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 
 		// Création d'un refresh token permettant à l'utilisateur de garder son accès à son token, malgré
 		// son temps d'expiration cours. Le refresh token est supposé permette au user de se recréer un token
@@ -51,7 +51,7 @@ router.post('/token', (req, res) => {
 		// On créer un nouveau access token considérant que le refresh token est valide et
 		// permet la création d'un nouveau token pour l'utilisateur
 		const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
-			expiresIn: '30s',
+			expiresIn: '1h',
 		});
 
 		res.json({ accessToken: accessToken });

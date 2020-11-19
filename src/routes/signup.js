@@ -8,7 +8,9 @@ const csrfProtection = csrf({ cookie: true });
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-/* GET home page. */
+/**
+ * Permet de render la page de signup
+ */
 router.get('/', (req, res) => {
 	res.render('signup');
 });
@@ -30,7 +32,7 @@ router.post('/', async (req, res, next) => {
 	await user.save();
 
 	//Création d'un token
-	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
+	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
 	res.json({ token: token });
 });
 
