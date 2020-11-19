@@ -8,10 +8,6 @@
 		"devstartauth": "nodemon ./bin/www_auth"
 	},
 	"dependencies": {
-<<<<<<< HEAD
-		"@hapi/joi": "^17.1.1",
-=======
->>>>>>> auth-and-token
 		"bcrypt": "^5.0.0",
 		"body-parser": "^1.19.0",
 		"cookie-parser": "~1.4.4",
@@ -24,10 +20,6 @@
 		"express-session": "^1.17.1",
 		"express-validator": "^6.6.1",
 		"http-errors": "~1.6.3",
-<<<<<<< HEAD
-		"joi": "^17.3.0",
-=======
->>>>>>> auth-and-token
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.10.13",
 		"morgan": "~1.9.1",
