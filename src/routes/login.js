@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 });
 
 /* Est appelé lorsque le fomulaire de connexion est envoyé */
-router.post('/', (req, res) => {
+router.post('/login', (req, res) => {
 	// Validation des identifiants entrés : recherche d'un user existant avec ce email
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
 		if (err) return res.json({ success: false, message: err });

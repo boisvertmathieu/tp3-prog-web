@@ -11,6 +11,9 @@ const flash = require('express-flash');
 require('dotenv').config(); // For secret token access in .env file
 
 // Routers
+const loginRouter = require('./src/routes/login');
+const signupRouter = require('./src/routes/signup');
+const logoutRouter = require('./src/routes/logout');
 const usersRouter = require('./src/routes/users');
 const homeRouter = require('./src/routes/home');
 
@@ -31,6 +34,9 @@ const middlewares = [
 app.use(middlewares);
 
 // routes
+app.use('/', loginRouter);
+app.use('/inscription', signupRouter);
+app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
 app.use('/users', usersRouter);
 

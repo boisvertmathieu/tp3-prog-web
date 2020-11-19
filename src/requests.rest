@@ -1,13 +1,13 @@
 GET http://localhost:3000/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMzgwLCJleHAiOjE2MDU3NDA0MTB9.dQQlgwqzUMh8k-js9DU8yCXJhOo21TvDBEh9liTnqHw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWwiLCJpYXQiOjE2MDU4MDI0NzIsImV4cCI6MTYwNTgwNjA3Mn0.x46ZyerpU3Pt3LTA5y_yyP78IOcJPvQZ_J_5nVB0iAk
 
 ### LOGIN
 
-GET http://localhost:4000/login
+GET http://localhost:3000/
 
 ### 
 
-POST http://localhost:4000/login
+POST http://localhost:3000/login
 Content-Type: application/json
 
 {
@@ -17,17 +17,17 @@ Content-Type: application/json
 
 ### REFRESH TOKEN
 
-POST http://localhost:4000/login/token
+POST http://localhost:3000/token
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1NzQwMzgwfQ.wOYITXwI4G1IC_L1LGBt4MitNoivI0Jpo7QzsHwWMTs"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1ODAyNDUxfQ.8mltI85-Qv3SEmMoXUrt_C9CO33NhuWDC7hXQEvN84k"
 }
 
 
 ### LOGOUT
 
-DELETE http://localhost:4000/logout
+DELETE http://localhost:3000/logout
 Content-Type: application/json
 
 {
@@ -36,11 +36,11 @@ Content-Type: application/json
 
 ### SIGN UP
 
-GET http://localhost:4000/inscription
+GET http://localhost:3000/inscription
 
 ###
 
-POST http://localhost:4000/inscription
+POST http://localhost:3000/inscription
 Content-Type: application/json
 
 {
@@ -49,3 +49,17 @@ Content-Type: application/json
     "password":"gamer",
     "confPwd":"gamer"
 }
+
+###
+
+
+
+
+
+
+
+
+
+
+
+GET https://tp3mbjg.azurewebsites.net/login
