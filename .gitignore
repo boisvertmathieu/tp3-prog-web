@@ -1,6 +1,9 @@
 # .idea (IntelliJ IDEs)
 .idea/
 
+# Jshint
+.jshintrc
+
 # Logs
 logs
 *.log
