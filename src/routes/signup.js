@@ -18,7 +18,7 @@ router.post('/', async (req, res, next) => {
 	// Validation de l'existe d'un user avec le courriel entré
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
 		if (err) return res.json({ success: false, message: err });
-		if (user) return res.json({ success: false, message: 'User with this email is already created' });
+		if (user) return res.sendStatus(403);
 	});
 
 	//Création du user
