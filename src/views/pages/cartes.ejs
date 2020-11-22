@@ -8,9 +8,26 @@
 <main>
     <div class="container">
         <h1>Cartes</h1>
-        <div class="jumbotron">
-            <h2>Cards go here</h2>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>Nom de la carte</td>
+                    <td>Pseudo</td>
+                    <td>Date</td>
+                </tr>
+            </thead>
+            <tbody>
+                <% cards.forEach(function (card) { %>
+                    <tr>
+                        <td><%= card.cue %></td>
+                        <td><%= card.show %></td>
+                        <td><%= card.rep %></td>
+                    </tr>
+
+                <% }) %>
+            </tbody>
+        </table>
+
 
     </div>
 </main>

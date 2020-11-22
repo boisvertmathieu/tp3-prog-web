@@ -4,8 +4,11 @@ const checkToken = require('../middlewares/token');
 const Carte = require('../models/carteSchema');
 
 /* GET users listing. */
-router.get('/', checkToken.checkToken, function(req, res, next) {
-  res.render('cartes');
+router.get('/', function(req, res, next) {
+
+    Carte.find({}).sort({cue: 'asc'}).exec(function (err, cards) {
+        res.render('cartes', {cards: cards});
+    });
 });
 
 router.post('/', async (req, res, next) => {
@@ -13,6 +16,7 @@ router.post('/', async (req, res, next) => {
   res.setHeader('Content-Type', 'application/json');
 
   //TODO Validation des champs avant la modification
+    //TODO check si l'utilisateur est admin
 
     // Recherche sur cue car mongo veut parse en ObjectId tout ce qui est _id
   let carteAffecte = await Carte.findOneAndUpdate(
