@@ -1,5 +1,5 @@
 GET http://localhost:3000/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdWwiLCJpYXQiOjE2MDU4MDI4NTcsImV4cCI6MTYwNTgwNjQ1N30.QZ5FMZFaL4IZ-pfqy4WzlQ-9-dS7DySVA5GlIDDwYo8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1OTc3NjM1LCJleHAiOjE2MDU5ODEyMzV9.sLMZuyH9MCyPpcMUMHxqO4r6adWiuw2Dm2ebvSGT00c
 
 ### LOGIN
 
@@ -7,7 +7,7 @@ GET http://localhost:3000/
 
 ### 
 
-POST http://localhost:3000/login
+POST http://localhost:3000/connexion
 Content-Type: application/json
 
 {
@@ -21,13 +21,13 @@ POST http://localhost:3000/token
 Content-Type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1ODAyODUxfQ.txmwoA3_EiNXC9uTGtwq_ZSFUrX4pEsBNCWKhEq0vU4"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1OTc3NjY0fQ.0clNzMBJCPHWNrNRIlofXRIiFN-Tpk6lT74YmxoAusc"
 }
 
 
 ### LOGOUT
 
-DELETE http://localhost:3000/logout
+DELETE http://localhost:3000/logout 
 Content-Type: application/json
 
 {
@@ -52,14 +52,10 @@ Content-Type: application/json
 
 ###
 
+POST http://dev.seraphii.me/connexion
+Content-Type: application/json
 
-
-
-
-
-
-
-
-
-
-GET https://tp3mbjg.azurewebsites.net/login
+{
+  "email": "paul@gmail.com",
+  "password": "gamer"
+}
