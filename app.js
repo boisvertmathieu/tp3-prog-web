@@ -17,6 +17,7 @@ const signupRouter = require('./src/routes/signup');
 const logoutRouter = require('./src/routes/logout');
 const usersRouter = require('./src/routes/users');
 const homeRouter = require('./src/routes/home');
+const cartesRouter = require('./src/routes/cartes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(middlewares);
 app.use('/', indexRouter);
 app.use('/connexion', loginRouter);
 app.use('/inscription', signupRouter);
+app.use('/cartes', cartesRouter);
 app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
 app.use('/users', usersRouter);

@@ -15,9 +15,9 @@ router.post('/', (req, res) => {
 	// Validation des identifiants entrés : recherche d'un user existant avec ce email
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
 		if (err) return res.json({ success: false, message: err });
-		if (!user) return res.json({ success: false, message: 'Not user with this email is created' });
+		if (!user) return res.json({ success: false, message: 'Aucun utilisateur associé à ce courriel' });
 		if (!bcrypt.compareSync(req.body.password, user.password))
-			return res.json({ success: false, message: 'Password is invalid' });
+			return res.json({ success: false, message: 'Mot de passe est invalide' });
 
 		//If no errors, on créer un accessToken pour le user identifié.
 		let accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
