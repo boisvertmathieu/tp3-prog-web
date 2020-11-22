@@ -10,7 +10,7 @@ class Database {
     }
 
     _connect() {
-        mongoose.connect(`mongodb+srv://${username}:${password}@gagnonj-tp3-progwa.nvxnx.mongodb.net/${database}?retryWrites=true&w=majority`)
+        mongoose.connect(`mongodb+srv://${username}:${password}@gagnonj-tp3-progwa.nvxnx.mongodb.net/${database}?retryWrites=true&w=majority`, {useFindAndModify: false})
             .then(() => {
                 console.log('Database connection successful')
             })
