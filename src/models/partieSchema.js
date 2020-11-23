@@ -1,10 +1,14 @@
 let mongoose = require('mongoose');
 
-let partie = mongoose.Schema({
+let Schema = mongoose.Schema;
+let PartieSchema = new Schema({
     date_heure: {
         type: String,
         required: true
     }
-})
+}, {versionKey: false});
 
-module.exports = mongoose.model('partie', partie);
+let Partie = mongoose.model('Partie', PartieSchema);
+
+module.exports.Schema = PartieSchema;
+module.exports.Model = Partie;

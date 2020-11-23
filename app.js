@@ -15,7 +15,7 @@ const indexRouter = require('./src/routes/index');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
 const logoutRouter = require('./src/routes/logout');
-const usersRouter = require('./src/routes/users');
+const partieRouter = require('./src/routes/partie');
 const homeRouter = require('./src/routes/home');
 const cartesRouter = require('./src/routes/cartes');
 
@@ -32,6 +32,7 @@ const middlewares = [
 	express.json(),
 	express.urlencoded({ extended: false }),
 	express.static(path.join(__dirname, '/src/public')),
+	cookieParser(),
 ];
 app.use(middlewares);
 
@@ -42,7 +43,7 @@ app.use('/inscription', signupRouter);
 app.use('/cartes', cartesRouter);
 app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
-app.use('/users', usersRouter);
+app.use('/joueur/partie', partieRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

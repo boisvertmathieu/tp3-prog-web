@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Utilisateur = require('../models/utilisateurSchema');
-const validationResult = require('express-validator')
+const validationResult = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -16,7 +16,6 @@ router.get('/', (req, res) => {
  * Called when submitting a sign up request (submitting sign up form)
  */
 router.post('/', async (req, res, next) => {
-
 	// Validation de l'existe d'un user avec le courriel entré
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
 		if (err) return res.json({ success: false, message: err });
@@ -33,9 +32,10 @@ router.post('/', async (req, res, next) => {
 	await user.save();
 
 	//Création d'un token
-	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' });
 
 	//Retour du token
+	res.cookie('token', token, { httpOnly: true, expiresIn: '12h' });
 	res.json({ token: token });
 });
 

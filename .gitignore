@@ -111,3 +111,6 @@ dist
 
 # .DS_Store
 .DS_Store
+
+# Requests file
+requests.rest
