@@ -38,8 +38,8 @@ const middlewares = [
 		resave: false,
 		saveUninitialized: false,
 		cookie: {maxAge : 604800}
-	})
-	cookieParser(),
+	}),
+	cookieParser()
 ];
 app.use(middlewares);
 
