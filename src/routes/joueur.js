@@ -7,7 +7,7 @@ const Partie = require('../models/partieSchema');
 /**
  * Recherche de toutes les invitations du joueur dans chaque requêtes fait à /
  */
-router.use('/partie', checkToken.checkToken, async function (req, res, next) {
+router.use('/', checkToken.checkToken, async function (req, res, next) {
 	const invitations = await Invitation.Model.find({ id_user_to: req.user._id }).exec();
 	req.invitations = invitations;
 	next();
@@ -23,7 +23,6 @@ router.get('/partie', function (req, res, next) {
 /**
  * Permet de créer une invitation dont les données sont contenues en body de requête
  */
-//TODO : Retourne une page d'erreur mais l'invitation est bel et bien enregistré dans la bd. À voir plus tard
 router.post('/partie', function (req, res, next) {
 	try {
 		//Récupération des données de la partie dans le body de la requête
@@ -34,6 +33,7 @@ router.post('/partie', function (req, res, next) {
 		});
 
 		invitation.save();
+		res.json({ success: true, message: 'Partie ajoutée avec succès' });
 	} catch (err) {
 		console.log(err);
 		res.json({ success: false, message: err });

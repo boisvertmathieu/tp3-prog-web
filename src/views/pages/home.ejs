@@ -4,26 +4,37 @@
     <%- include('../partials/head'); %>
 </head>
 <body class="container">
-
-<header>
-    <%- include('../partials/header'); %>
-</header>
-
+<%- include('../partials/header'); %>
 <main>
-    <% if (messages.success) { %>
-        <h1>Vous êtes connecté</h1>
-        <div class="flash flash-success"><%= messages.success %></div>
-        <a href="/">Accueil</a>
-        <a href="/inscription">Inscriptions</a>
-        <% if (messages.results) { %>
-            <% messages.results.forEach(function (message) { %>
-                <p><%= message %></p>
-            <% }); %>
-        <% } %>
-    <% } else { %>
-        <h1>Vous n'êtes pas connecté</h1>
-    <% } %>
-</main>
+    <div class="container pt-5">
+        <% if (user) { %>
+            <h1>Vous êtes connecté</h1>
+            <h3>Voici vos informations : </h3>
+            <table class="table">
+                <thead>
+                <tr>
 
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>isAdmin</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><%= user._id %></td>
+                    <td><%= user.username %></td>
+                    <td><%= user.email %></td>
+                    <td><%= user.password %></td>
+                    <td><%= user.isAdmin %></td>
+                </tr>
+                </tbody>
+            </table>
+        <% } else { %>
+            <h1>Vous n'êtes pas connecté</h1>
+        <% } %>
+    </div>
+</main>
 </body>
 </html>
