@@ -1,5 +1,5 @@
 GET http://localhost:3000/home
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA1OTc3NjM1LCJleHAiOjE2MDU5ODEyMzV9.sLMZuyH9MCyPpcMUMHxqO4r6adWiuw2Dm2ebvSGT00c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FkbWluIjpmYWxzZSwiX2lkIjoiNWZiM2ViNjA4NjI2YzI3YWEwMjgxOGFlIiwidXNlcm5hbWUiOiJwYXVsIiwiZW1haWwiOiJwYXVsQGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEwJHZkZDBmblJSSC5jblR0L0dSV3I2QS5aOUpWc3NMU0h6bkM2bTUwUEZ0MUtYUjVTTXJ4bXFTIiwiaWF0IjoxNjA2MTUxMDE0LCJleHAiOjE2MDYxNTQ2MTR9.RmILK8b4TAIrJS1y7WqzXoIBixKNabK-kAdsSEn2maE
 
 ### LOGIN
 
@@ -27,7 +27,7 @@ Content-Type: application/json
 
 ### LOGOUT
 
-DELETE http://localhost:3000/logout 
+DELETE http://localhost:3000/logout
 Content-Type: application/json
 
 {
@@ -59,3 +59,18 @@ Content-Type: application/json
   "email": "paul@gmail.com",
   "password": "gamer"
 }
+
+###
+
+POST http://localhost:3000/joueur/partie
+Content-Type: application/json
+
+{
+    "id_user_to": "5fb3eb608626c27aa02818ae",
+    "id_partie": "5fac55a764a4c5756e64fc2d",
+    "status":"0"
+}
+
+###
+
+PUT http://localhost:3000/joueur/partie/5fac55a42e9b6756ede460b

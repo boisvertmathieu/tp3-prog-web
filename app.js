@@ -15,7 +15,8 @@ const indexRouter = require('./src/routes/index');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
 const logoutRouter = require('./src/routes/logout');
-const usersRouter = require('./src/routes/users');
+const joueurRouter = require('./src/routes/joueur');
+const partieRouter = require('./src/routes/partie');
 const homeRouter = require('./src/routes/home');
 const cartesRouter = require('./src/routes/cartes');
 
@@ -38,6 +39,7 @@ const middlewares = [
 		saveUninitialized: false,
 		cookie: {maxAge : 604800}
 	})
+	cookieParser(),
 ];
 app.use(middlewares);
 
@@ -48,7 +50,8 @@ app.use('/inscription', signupRouter);
 app.use('/cartes', cartesRouter);
 app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
-app.use('/users', usersRouter);
+app.use('/joueur', joueurRouter);
+app.use('/partie', partieRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

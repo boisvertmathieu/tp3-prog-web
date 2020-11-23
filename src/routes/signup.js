@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const Utilisateur = require('../models/utilisateurSchema');
+const validationResult = require('express-validator');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -38,9 +39,10 @@ router.post('/', async (req, res, next) => {
 	await user.save();
 
 	//Création d'un token
-	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+	const token = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' });
 
 	//Retour du token
+	res.cookie('token', token, { httpOnly: true, expiresIn: '12h' });
 	res.json({ token: token });
 });
 

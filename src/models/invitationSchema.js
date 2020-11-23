@@ -1,22 +1,31 @@
 let mongoose = require('mongoose');
-let partie = require('./partieSchema');
-let utilisateur = require('./utilisateurSchema');
+let Partie = require('./partieSchema');
+let Utilisateur = require('./utilisateurSchema');
 
-let invitation = mongoose.Schema({
-    id_user_to: {
-        type: utilisateur.ObjectID,
-        required: true
-    },
-    id_partie: {
-        type: partie.ObjectId,
-        required: true
-    },
-    status: {
-        type: Number,
-        default: 0,
-        min: 0,
-        max: 2
-    }
-})
+const Schema = mongoose.Schema;
+const InvitationSchema = new Schema(
+	{
+		id_user_to: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Utilisateur',
+			required: true,
+		},
+		id_partie: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Partie',
+			required: true,
+		},
+		status: {
+			type: Number,
+			default: 0,
+			min: 0,
+			max: 2,
+		},
+	},
+	{ versionKey: false }
+);
 
-module.exports = mongoose.model('invitation', invitation);
+let Invitation = mongoose.model('Invitation', InvitationSchema);
+
+module.exports.Schema = InvitationSchema;
+module.exports.Model = Invitation;

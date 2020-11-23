@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 			return res.json({ success: false, message: 'Mot de passe est invalide' });
 
 		//If no errors, on créer un accessToken pour le user identifié.
-		let accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+		let accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: '12h' });
 
 		//On créer aussi un refreshToken afin de lui permettre de regénérer un accessToken quand celui-ci
 		//va être expiré
@@ -33,6 +33,7 @@ router.post('/', (req, res) => {
 		rt.save();
 
 		//On retourne le accessToken et son refreshToken
+		res.cookie('token', accessToken, { httpOnly: true, expiresIn: '12h' });
 		res.json({ accessToken: accessToken, refreshToken: refreshToken });
 	});
 });
@@ -58,9 +59,10 @@ router.post('/token', (req, res) => {
 		// On retourne seulement une partie des information du user avec le token (seulement le username), considérant
 		// que la varibale 'user' contient maintenant plus d'information de nécessaire
 		const accessToken = jwt.sign({ username: user.username }, process.env.ACCESS_TOKEN_SECRET, {
-			expiresIn: '1h',
+			expiresIn: '12h',
 		});
 
+		res.cookie('token', accessToken, { httpOnly: true, expiresIn: '12h' });
 		res.json({ accessToken: accessToken });
 	});
 });
