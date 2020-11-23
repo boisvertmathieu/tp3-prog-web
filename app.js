@@ -15,6 +15,7 @@ const indexRouter = require('./src/routes/index');
 const loginRouter = require('./src/routes/login');
 const signupRouter = require('./src/routes/signup');
 const logoutRouter = require('./src/routes/logout');
+const joueurRouter = require('./src/routes/joueur');
 const partieRouter = require('./src/routes/partie');
 const homeRouter = require('./src/routes/home');
 const cartesRouter = require('./src/routes/cartes');
@@ -43,7 +44,8 @@ app.use('/inscription', signupRouter);
 app.use('/cartes', cartesRouter);
 app.use('/logout', logoutRouter);
 app.use('/home', homeRouter);
-app.use('/joueur/partie', partieRouter);
+app.use('/joueur', joueurRouter);
+app.use('/partie', partieRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
