@@ -3,7 +3,7 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-const database = require('./src/database');
+const database = require('./src/middlewares/database');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
@@ -33,7 +33,13 @@ const middlewares = [
 	express.json(),
 	express.urlencoded({ extended: false }),
 	express.static(path.join(__dirname, '/src/public')),
-	cookieParser(),
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: {maxAge : 604800}
+	}),
+	cookieParser()
 ];
 app.use(middlewares);
 
