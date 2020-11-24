@@ -67,10 +67,18 @@ Content-Type: application/json
 
 {
     "id_user_to": "5fb3eb608626c27aa02818ae",
-    "id_partie": "5fac55a764a4c5756e64fc2d",
-    "status":"0"
+    "id_partie": "5fac55a42e9b6b756ede460b",
+    "status":"2"
 }
 
 ###
 
-PUT http://localhost:3000/joueur/partie/5fac55a42e9b6756ede460b
+PUT http://localhost:3000/joueur/partie/5fac55a764a4c5756e64fc2d
+
+###
+
+PUT http://localhost:3000/joueur/no-partie/5fac55a42e9b6b756ede460b
+
+###
+
+GET http://localhost:3000/partie
