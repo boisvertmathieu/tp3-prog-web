@@ -2,12 +2,13 @@ var express = require('express');
 var router = express.Router();
 const checkToken = require('../middlewares/token');
 const Invitation = require('../models/invitationSchema');
+const Utilisateur = require('../models/utilisateurSchema');
 const Partie = require('../models/partieSchema');
 
 /**
  * Recherche de toutes les invitations du joueur dans chaque requêtes fait à /
  */
-router.use('/partie', checkToken.checkToken, async function (req, res, next) {
+router.use('/', checkToken.checkToken, async function (req, res, next) {
 	const invitations = await Invitation.Model.find({ id_user_to: req.user._id }).exec();
 	req.invitations = invitations;
 	next();
@@ -21,19 +22,69 @@ router.get('/partie', function (req, res, next) {
 });
 
 /**
+ * Permet d'accepter une invitation à une partie identifiée
+ */
+router.get('/partie/:id', function (req, res, next) {
+	let id_partie = req.params.id;
+	let invitations = req.invitations;
+	let is_included = false;
+	invitations.forEach(function (invite) {
+		if (invite.id_partie == id_partie) is_included = true;
+	});
+
+	if (!is_included) return res.json({ success: false, message: "Le joueur n'a pas été invité à cette partie" });
+	else return res.json({ success: true, message: "La partie aura lieu ici!" });
+});
+
+/**
  * Permet de créer une invitation dont les données sont contenues en body de requête
  */
-//TODO : Retourne une page d'erreur mais l'invitation est bel et bien enregistré dans la bd. À voir plus tard
-router.post('/partie', function (req, res, next) {
+router.post('/partie', async function (req, res, next) {
 	try {
-		//Récupération des données de la partie dans le body de la requête
-		let invitation = new Invitation.Model({
-			id_user_to: req.body.id_user_to,
-			id_partie: req.body.id_partie,
-			status: req.body.status,
+		//Création d'un array avec l'id des joueurs concernés
+		var usersIds = [req.user._id];
+
+		//Vérification d'utilisateurs valides
+		if(req.body.id_user_to1 != null){
+			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to1 });
+			if (user) {
+				usersIds.push(user.id);
+			}
+		};
+		if(req.body.id_user_to2 != null){
+			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to2 });
+			if (user) {
+				usersIds.push(user.id);
+			}
+		};
+		if(req.body.id_user_to3 != null){
+			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to3 });
+			if (user) {
+				usersIds.push(user.id);
+			}
+		};
+
+		//Vérification qu'il y a au moins un joueur valide
+		if(usersIds.length == 1) return res.json({success: false, message: "Aucun des joueurs fournis n'est valide"})
+
+		//Création d'une partie dans la BD
+		let partie = new Partie.Model({
+			date_heure: req.body.date_heure
+		});
+		partie.save();
+
+		//Envoi des invitations
+		usersIds.forEach(idUser => {
+			let invitation = new Invitation.Model({
+				id_user_to: idUser,
+				id_partie: partie._id,
+				status: 0
+			});
+
+			invitation.save();
 		});
 
-		invitation.save();
+		res.json({ success: true, message: "Partie ajoutée avec succès" });
 	} catch (err) {
 		console.log(err);
 		res.json({ success: false, message: err });
