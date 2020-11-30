@@ -8,6 +8,9 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 
+//Serveur faisant la gestion des websockets
+const socket = require('./socket');
+
 require('dotenv').config(); // For secret token access in .env file
 
 // Routers
@@ -37,9 +40,9 @@ const middlewares = [
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		cookie: {maxAge : 604800}
+		cookie: { maxAge: 604800 },
 	}),
-	cookieParser()
+	cookieParser(),
 ];
 app.use(middlewares);
 
