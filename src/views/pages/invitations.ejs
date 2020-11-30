@@ -7,27 +7,27 @@
 		<%- include('../partials/header'); %>
 		<main>
 			<div class="container pt-5">
-				<% if (user) { %>
+				<% if (data) { %>
 				<h1>Vous êtes connecté</h1>
-				<h3>Voici vos informations :</h3>
+				<h3>Voici vos invitations :</h3>
 				<table class="table">
 					<thead>
 						<tr>
-							<th>Id</th>
-							<th>Username</th>
-							<th>Email</th>
-							<th>Password</th>
-							<th>isAdmin</th>
+							<th>_id</th>
+							<th>id_user_to</th>
+							<th>id_partie</th>
+							<th>status</th>
 						</tr>
 					</thead>
 					<tbody>
+						<% for(var i = 0; i < data.length; i++) { %>
 						<tr>
-							<td><%= user._id %></td>
-							<td><%= user.username %></td>
-							<td><%= user.email %></td>
-							<td><%= user.password %></td>
-							<td><%= user.isAdmin %></td>
+							<td><%= data[i]._id %></td>
+							<td><%= data[i].id_user_to %></td>
+							<td><%= data[i].id_partie %></td>
+							<td><%= data[i].status %></td>
 						</tr>
+						<% } %>
 					</tbody>
 				</table>
 

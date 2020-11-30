@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../partials/head'); %>
+	</head>
+	<body class="container">
+		<%- include('../partials/header'); %>
+		<main>
+			<div class="container pt-5">
+				<h1>Rejoindre une partie</h1>
+				<form action="/partie" method="post" class="pt-4">
+					<div class="form-group">
+						<label for="id_partie">Numéro de la partie: </label>
+						<input type="text" name="id_partie" id="id_partie" class="form" />
+					</div>
+					<button type="submit" class="btn btn-primary">Rejoindre</button>
+				</form>
+			</div>
+		</main>
+	</body>
+</html>

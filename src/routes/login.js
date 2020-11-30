@@ -14,7 +14,6 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
 	//Vérification de si l'accessToken de l'utilisateur est déjà présent dans la bd
 
-
 	// Validation des identifiants entrés : recherche d'un user existant avec ce email
 	Utilisateur.Model.findOne({ email: req.body.email }).exec((err, user) => {
 		if (err) return res.json({ success: false, message: err });
@@ -37,8 +36,8 @@ router.post('/', (req, res) => {
 
 		//On retourne le accessToken et son refreshToken
 		res.cookie('token', accessToken, { httpOnly: true, expiresIn: '12h' });
-		res.cookie('refresh-token', refreshToken, {httpOnly: true});
-		res.json({ accessToken: accessToken, refreshToken: refreshToken });
+		res.cookie('refresh-token', refreshToken, { httpOnly: true });
+		res.redirect('home');
 	});
 });
 
