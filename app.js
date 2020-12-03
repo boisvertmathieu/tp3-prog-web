@@ -12,16 +12,9 @@ var dotenv = require('dotenv').config(); // For secret token access in .env file
 var utils = require('./src/middlewares/utils');
 var debug = require('debug')('tp3-prog-web:server');
 
-<<<<<<< HEAD
-//Serveur faisant la gestion des websockets
-const socket = require('./socket');
-
-require('dotenv').config(); // For secret token access in .env file
-=======
 var app = express();
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
->>>>>>> websockets
 
 // Routers
 var indexRouter = require('./src/routes/index');
