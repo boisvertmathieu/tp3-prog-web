@@ -30,8 +30,13 @@ io.on('connection', (socket) => {
 
 	socket.on('event', function (data) {
 		console.log(new Date().getSeconds() + "Réception d'un message");
+<<<<<<< HEAD
 		console.log('Message: ' + data.message);
 		data.message = data.message + '?';
+=======
+		console.log('Message: ' + data.message.value);
+		data.message = data.message.value + '?';
+>>>>>>> websockets
 		socket.emit('event', data.message);
 	});
 });

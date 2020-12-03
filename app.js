@@ -1,36 +1,44 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-const database = require('./src/middlewares/database');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
-const flash = require('express-flash');
+//Imports
+var express = require('express');
+var createError = require('http-errors');
+var path = require('path');
+var logger = require('morgan');
+var bodyParser = require('body-parser');
+var database = require('./src/middlewares/database');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var flash = require('express-flash');
+var dotenv = require('dotenv').config(); // For secret token access in .env file
+var utils = require('./src/middlewares/utils');
+var debug = require('debug')('tp3-prog-web:server');
 
+<<<<<<< HEAD
 //Serveur faisant la gestion des websockets
 const socket = require('./socket');
 
 require('dotenv').config(); // For secret token access in .env file
+=======
+var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+>>>>>>> websockets
 
 // Routers
-const indexRouter = require('./src/routes/index');
-const loginRouter = require('./src/routes/login');
-const signupRouter = require('./src/routes/signup');
-const logoutRouter = require('./src/routes/logout');
-const joueurRouter = require('./src/routes/joueur');
-const partieRouter = require('./src/routes/partie');
-const homeRouter = require('./src/routes/home');
-const cartesRouter = require('./src/routes/cartes');
-
-const app = express();
+var indexRouter = require('./src/routes/index');
+var loginRouter = require('./src/routes/login');
+var signupRouter = require('./src/routes/signup');
+var logoutRouter = require('./src/routes/logout');
+var joueurRouter = require('./src/routes/joueur');
+var partieRouter = require('./src/routes/partie');
+var homeRouter = require('./src/routes/home');
+var cartesRouter = require('./src/routes/cartes');
 
 // view engine setup
 app.set('views', path.join(__dirname, '/src/views/pages'));
 app.set('view engine', 'ejs');
 
 //middlewares
-const middlewares = [
+var middlewares = [
 	bodyParser.urlencoded({ extended: true }),
 	bodyParser.json(),
 	express.json(),
@@ -70,6 +78,27 @@ app.use(function (err, req, res, next) {
 	// render the error page
 	res.status(err.status || 500);
 	res.render('error');
+});
+
+////////////////////////////////////////////////////////////////
+//Sockets handling
+//User in entering the game
+io.on('connection', (socket) => {
+	console.log('----------- A user is connected -----------');
+	socket.emit('connection');
+
+	socket.on('messageToServer', (message) => {
+		console.log('Message: ' + message);
+	});
+
+	//User is leaving the game
+	socket.on('disconnect', () => {
+		console.log('----------- User is disconnected -----------');
+	});
+});
+
+http.listen(utils.normalizePort(process.env.PORT || '3000'), () => {
+	console.log('Listening on *:3000');
 });
 
 module.exports = app;
