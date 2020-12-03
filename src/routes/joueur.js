@@ -18,7 +18,10 @@ router.use('/', checkToken.checkToken, async function (req, res, next) {
  * Permet d'afficher toutes les invitations du joueurs
  */
 router.get('/partie', function (req, res, next) {
-	res.json(req.invitations);
+	res.render('invitations', {
+		user: req.user,
+		data: req.invitations,
+	});
 });
 
 /**
@@ -33,7 +36,7 @@ router.get('/partie/:id', function (req, res, next) {
 	});
 
 	if (!is_included) return res.json({ success: false, message: "Le joueur n'a pas été invité à cette partie" });
-	else return res.json({ success: true, message: "La partie aura lieu ici!" });
+	else return res.json({ success: true, message: 'La partie aura lieu ici!' });
 });
 
 /**
@@ -45,46 +48,47 @@ router.post('/partie', async function (req, res, next) {
 		var usersIds = [req.user._id];
 
 		//Vérification d'utilisateurs valides
-		if(req.body.id_user_to1 != null){
-			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to1 });
+		if (req.body.id_user_to1 != null) {
+			let user = await Utilisateur.Model.findOne({ username: req.body.id_user_to1 });
 			if (user) {
 				usersIds.push(user.id);
 			}
-		};
-		if(req.body.id_user_to2 != null){
-			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to2 });
+		}
+		if (req.body.id_user_to2 != null) {
+			let user = await Utilisateur.Model.findOne({ username: req.body.id_user_to2 });
 			if (user) {
 				usersIds.push(user.id);
 			}
-		};
-		if(req.body.id_user_to3 != null){
-			let user = await Utilisateur.Model.findOne({ 'username': req.body.id_user_to3 });
+		}
+		if (req.body.id_user_to3 != null) {
+			let user = await Utilisateur.Model.findOne({ username: req.body.id_user_to3 });
 			if (user) {
 				usersIds.push(user.id);
 			}
-		};
+		}
 
 		//Vérification qu'il y a au moins un joueur valide
-		if(usersIds.length == 1) return res.json({success: false, message: "Aucun des joueurs fournis n'est valide"})
+		if (usersIds.length == 1)
+			return res.json({ success: false, message: "Aucun des joueurs fournis n'est valide" });
 
 		//Création d'une partie dans la BD
 		let partie = new Partie.Model({
-			date_heure: req.body.date_heure
+			date_heure: req.body.date_heure,
 		});
 		partie.save();
 
 		//Envoi des invitations
-		usersIds.forEach(idUser => {
+		usersIds.forEach((idUser) => {
 			let invitation = new Invitation.Model({
 				id_user_to: idUser,
 				id_partie: partie._id,
-				status: 0
+				status: 0,
 			});
 
 			invitation.save();
 		});
 
-		res.json({ success: true, message: "Partie ajoutée avec succès" });
+		res.json({ success: true, message: 'Partie ajoutée avec succès' });
 	} catch (err) {
 		console.log(err);
 		res.json({ success: false, message: err });

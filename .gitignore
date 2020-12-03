@@ -114,3 +114,12 @@ dist
 
 # Requests file
 requests.rest
+
+# VS Code files
+.vscode
+
+.deployment
+
+#Postman stuff
+*.postman_collection.json
+*.postman_environment.json

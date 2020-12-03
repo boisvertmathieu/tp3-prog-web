@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../partials/head'); %>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body class="container">
+		<main>
+			<div class="container pt-5">
+				<h1>Message</h1>
+				<label for="message">Message: </label>
+				<input type="text" name="message" id="message" />
+				<button id="send">Envoyer</button>
+			</div>
+			<script src="js/script.js"></script>
+		</main>
+	</body>
+</html>
