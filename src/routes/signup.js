@@ -4,6 +4,7 @@ const { check, validationResult } = require('express-validator');
 const Utilisateur = require('../models/utilisateurSchema');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const RefreshToken = require('../models/refreshTokenSchema');
 
 /**
  * Called when accessing signup page
