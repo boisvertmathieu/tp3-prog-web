@@ -3,6 +3,10 @@ var router = express.Router();
 const checkToken = require('../middlewares/token');
 const Carte = require('../models/carteSchema');
 
+router.use('/', checkToken.checkToken, function (req, res, next) {
+	next();
+});
+
 /* GET users listing. */
 router.get('/', function (req, res, next) {
 	Carte.Model.find({})

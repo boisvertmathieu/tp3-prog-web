@@ -3,11 +3,35 @@
 <head>
     <%- include('../partials/head'); %>
 </head>
+<header>
+    <%- include('../partials/header'); %>
+</header>
 <body class="container">
 
 <main>
     <div class="container">
         <h1>Cartes</h1>
+
+        <% if (user.isAdmin) {%>
+            <form class="bg-light p-3 mb-2" method="post" action="/cartes">
+                <h2>Formulaire d'ajout d'une carte</h2>
+
+                <div class="form-group">
+                     <label for="cue">Nom de la carte</label>
+                     <input type="text" id="cue" class="form-control" placeholder="Invention du vin">
+                </div>
+                <div class="form-group">
+                    <label for="displayName">Pseudo</label>
+                    <input type="text" id="displayName" class="form-control" placeholder="Vin">
+                </div>
+                <div class="form-group">
+                    <label for="rep">Date</label>
+                    <input type="number" id="rep" class="form-control" placeholder="-5000">
+                </div>
+                <input type="submit" value="Ajouter">
+            </form>
+        <% } %>
+
         <table class="table">
             <thead>
                 <tr>
@@ -22,6 +46,15 @@
                         <td><%= card.cue %></td>
                         <td><%= card.show %></td>
                         <td><%= card.rep %></td>
+                        <% if (user.isAdmin) {%>
+                            <td>
+                                <a class="btn btn-danger">
+                                    <i class="material-icons">
+                                        delete_forever
+                                    </i>
+                                </a>
+                            </td>
+                        <% } %>
                     </tr>
 
                 <% }) %>
