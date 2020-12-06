@@ -75,7 +75,7 @@ app.use(function (err, req, res, next) {
 
 ////////////////////////////////////////////////////////////////
 //Sockets handling
-//User in entering the game
+//User is entering the game
 io.on('connection', (socket) => {
 	console.log('----------- A user is connected -----------');
 	socket.emit('connection');
