@@ -5,7 +5,7 @@ const Carte = require('../models/carteSchema');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
-	Carte.find({})
+	Carte.Model.find({})
 		.sort({ cue: 'asc' })
 		.exec(function (err, cards) {
 			res.render('cartes', { user: req.user, cards: cards });

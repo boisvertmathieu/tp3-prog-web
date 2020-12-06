@@ -1,6 +1,9 @@
 var message = document.getElementById('message');
 var btn = document.getElementById('send');
 
+// Vérification
+var user_cards = document.getElementsByClassName('user-cards');
+
 var currentLocation = window.location;
 var path = new URL(currentLocation);
 

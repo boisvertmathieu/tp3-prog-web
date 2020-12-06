@@ -84,9 +84,6 @@ io.on('connection', (socket) => {
 	socket.emit('connection');
 
 	//TODO : Handling de la partie de carte ici
-	socket.on('messageToServer', (message) => {
-		console.log('Message: ' + message);
-	});
 
 	//User is leaving the game
 	socket.on('disconnect', () => {

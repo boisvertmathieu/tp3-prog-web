@@ -18,9 +18,9 @@
 				<h1 class="text-center">Serveur</h1>
 				<div class="row hidden-md-up">
 					<!-- 5 première cartes du paquet pour le premier joueur -->
-					<% for (var i = 0; i < 5; i++) { %>
+					<% for (var i = 0; i < 5; i++) { var id = "carte" + i %>
 					<div class="col-md-4 p-2">
-						<div class="card" style="width: 18rem">
+						<div class="card server-cards" style="width: 18rem" id="<%= id %>">
 							<div class="card-body">
 								<h5 class="card-title"><%= cartes[i] %></h5>
 							</div>
@@ -33,7 +33,7 @@
 					<!-- 5 dernière cartes du paquet pour le premier joueur -->
 					<% for (var i = 5; i < 10; i++) { %>
 					<div class="col-md-4 p-2">
-						<div class="card" style="width: 18rem">
+						<div class="card user-cards" style="width: 18rem">
 							<div class="card-body">
 								<h5 class="card-title"><%= cartes[i] %></h5>
 							</div>
