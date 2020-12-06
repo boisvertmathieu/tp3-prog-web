@@ -74,12 +74,16 @@ app.use(function (err, req, res, next) {
 });
 
 ////////////////////////////////////////////////////////////////
+var connect_counter = 0;
 //Sockets handling
-//User is entering the game
 io.on('connection', (socket) => {
+	//User entering a game
 	console.log('----------- A user is connected -----------');
+	connect_counter++;
+	console.log('Nombre of user connected : ' + connect_counter);
 	socket.emit('connection');
 
+	//TODO : Handling de la partie de carte ici
 	socket.on('messageToServer', (message) => {
 		console.log('Message: ' + message);
 	});
@@ -87,6 +91,8 @@ io.on('connection', (socket) => {
 	//User is leaving the game
 	socket.on('disconnect', () => {
 		console.log('----------- User is disconnected -----------');
+		connect_counter--;
+		console.log('Number of active user : ' + connect_counter);
 	});
 });
 
