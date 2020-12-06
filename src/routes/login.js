@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 	res.render('login');
 });
 
-/* Est appelé lorsque le fomulaire de connexion est envoyé */
+/* Est appelé lorsque le formulaire de connexion est envoyé */
 router.post('/', (req, res) => {
 	//Vérification de si l'accessToken de l'utilisateur est déjà présent dans la bd
 
