@@ -12,15 +12,38 @@
 		/>
 		<script src="/socket.io/socket.io.js"></script>
 	</head>
-	<body class="container">
-		<main>
-			<div class="container pt-5">
-				<h1>Message</h1>
-				<label for="message">Message: </label>
-				<input type="text" name="message" id="message" />
-				<button id="send">Envoyer</button>
+	<body>
+		<div class="py-5">
+			<div class="container">
+				<h1 class="text-center">Serveur</h1>
+				<div class="row hidden-md-up">
+					<!-- 5 première cartes du paquet pour le premier joueur -->
+					<% for (var i = 0; i < 5; i++) { %>
+					<div class="col-md-4 p-2">
+						<div class="card" style="width: 18rem">
+							<div class="card-body">
+								<h5 class="card-title"><%= cartes[i] %></h5>
+							</div>
+						</div>
+					</div>
+					<% } %>
+				</div>
+				<hr />
+				<div class="row hidden-md-up">
+					<!-- 5 dernière cartes du paquet pour le premier joueur -->
+					<% for (var i = 5; i < 10; i++) { %>
+					<div class="col-md-4 p-2">
+						<div class="card" style="width: 18rem">
+							<div class="card-body">
+								<h5 class="card-title"><%= cartes[i] %></h5>
+							</div>
+						</div>
+					</div>
+					<% } %>
+				</div>
+				<h1 class="text-center">Client</h1>
 			</div>
-			<script src="/js/script.js"></script>
-		</main>
+		</div>
+		<script src="/js/script.js"></script>
 	</body>
 </html>
