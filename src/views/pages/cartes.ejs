@@ -3,11 +3,36 @@
 <head>
     <%- include('../partials/head'); %>
 </head>
+<header>
+    <%- include('../partials/header'); %>
+</header>
 <body class="container">
 
 <main>
     <div class="container">
         <h1>Cartes</h1>
+
+        <% if (user.isAdmin) {%>
+
+            <form class="bg-light p-3 mb-2 col-md" method="post" action="/cartes" novalidate>
+                <h2>Formulaire d'ajout d'une carte</h2>
+
+                <div class="form-group">
+                     <label for="cue">Nom de la carte</label>
+                     <input type="text" name="cue" id="cue" class="form-control" placeholder="Invention du vin">
+                </div>
+                <div class="form-group">
+                    <label for="displayName">Pseudo</label>
+                    <input type="text" name="displayName" id="displayName" class="form-control" placeholder="Vin">
+                </div>
+                <div class="form-group">
+                    <label for="rep">Date</label>
+                    <input type="text" name="rep" id="rep" class="form-control" placeholder="-5000">
+                </div>
+                <input type="submit" value="Ajouter">
+            </form>
+        <% } %>
+
         <table class="table">
             <thead>
                 <tr>
@@ -23,7 +48,6 @@
                         <td><%= card.show %></td>
                         <td><%= card.rep %></td>
                     </tr>
-
                 <% }) %>
             </tbody>
         </table>
