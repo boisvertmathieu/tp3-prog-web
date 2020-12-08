@@ -75,6 +75,7 @@ app.use(function (err, req, res, next) {
 
 ////////////////////////////////////////////////////////////////
 var connect_counter = {};
+var cartes = [];
 //Sockets handling
 io.on('connection', (socket) => {
 	//User entering a game
@@ -98,6 +99,18 @@ io.on('connection', (socket) => {
 	socket.emit('connection', {
 		id_partie: partie,
 		nb_joueur: connect_counter[partie],
+	});
+	/**
+	 * Réception des cartes
+	 * DU MOMENT QU'UN UTILISATEUR EST CONNECTÉ, IL TRANSMET LES CARTES
+	 * DU SERVEUR AU SERVEUR. LES CARTES DU SERVEUR ONT DISPLAY:NONE DONC ELLES
+	 * N'APPARAISSENT PAS. c'est laite comme code mais ça marche entk
+	 */
+	socket.on('cartes', function (data) {
+		data.cartes.forEach(function (carte) {
+			cartes.push(carte);
+		});
+		console.log(cartes);
 	});
 
 	// Joueur rejoint la partie dont le numéro est en paramètre de la requête

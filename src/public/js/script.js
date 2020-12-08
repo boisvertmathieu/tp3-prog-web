@@ -15,6 +15,17 @@ var socket = io();
 socket.on('connection', function (data) {
 	console.log('You are connected to game : {' + data.id_partie + '}');
 	console.log('Nombre de joueur connecté à cette partie : ' + data.nb_joueur);
+	var cartes = [];
+	$('*[class=card]:hidden').each(function () {
+		console.log($(this)[0].innerText.split('\n'));
+		var cue = $(this)[0].innerText.split('\n')[2].split(':')[1];
+		var show = $(this)[0].innerText.split('\n')[3].split(':')[1];
+		var rep = $(this)[0].innerText.split('\n')[4].split(':')[1];
+		cartes.push({ cue: cue, show: show, rep: rep });
+	});
+	socket.emit('cartes', {
+		cartes: cartes,
+	});
 });
 
 // Ajout de click listener sur chacun des cartes du joueur

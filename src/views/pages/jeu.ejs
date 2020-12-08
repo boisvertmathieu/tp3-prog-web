@@ -27,7 +27,17 @@
 				<div id="ligne-du-temps"></div>
 				<hr />
 				<div class="row hidden-md-up">
-					<% for(var i = 5; i < 10; i ++) { %>
+					<% for(var i = 0; i < 5; i ++) { %>
+					<div class="d-none">
+						<div class="card" style="width: 18rem">
+							<div class="card-body">
+								<h4 class="card-title">Cue : <%= cartes[i].cue %></h4>
+								<h6 class="card-subtitle text-muted">Show : <%=cartes[i].show%></h6>
+								<p class="card-text p-y-1">Rep : <%=cartes[i].rep%></p>
+							</div>
+						</div>
+					</div>
+					<% } %> <% for(var i = 5; i < 10; i ++) { %>
 					<div class="col-md-4">
 						<div class="card" style="width: 18rem">
 							<div class="card-body">
