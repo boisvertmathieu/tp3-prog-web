@@ -75,8 +75,14 @@ app.use(function (err, req, res, next) {
 
 ////////////////////////////////////////////////////////////////
 var connect_counter = 0;
+var gameDict = [];
 //Sockets handling
 io.on('connection', (socket) => {
+
+	console.log("Socket ouvert", socket.id);
+
+
+
 	//User entering a game
 	console.log('----------- A user is connected -----------');
 	connect_counter++;
