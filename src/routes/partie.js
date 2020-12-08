@@ -52,7 +52,6 @@ router.get('/jeu/:id_partie',function (req, res, next) {
 					return res.json({ success: false, message: errInvitation });
 				}
 				else if (invite == null) {
-					console.log(invite);
 					console.log("Invitation is null");
 					return res.json({ success: false, message: "Vous n'êtes pas invités à la partie haha" });
 				}

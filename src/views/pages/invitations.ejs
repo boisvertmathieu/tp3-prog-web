@@ -8,32 +8,35 @@
 		<main>
 			<div class="container pt-5">
 				<% if (data) { %>
-				<h1>Vous êtes connecté</h1>
+				<h1>Vous êtes connecté en tant que <%= user.username %></h1>
 				<h3>Voici vos invitations :</h3>
 				<table class="table">
 					<thead>
 						<tr>
-							<th>_id</th>
-							<th>id_user_to</th>
-							<th>id_partie</th>
+							<th>_id de l'invitation</th>
+							<th>Id de la partie</th>
 							<th>status</th>
+							<th>Rejoindre la partie</th>
 						</tr>
 					</thead>
 					<tbody>
 						<% for(var i = 0; i < data.length; i++) { %>
 						<tr>
 							<td><%= data[i]._id %></td>
-							<td><%= data[i].id_user_to %></td>
 							<td><%= data[i].id_partie %></td>
 							<td><%= data[i].status %></td>
+							<td>
+								<a href="/partie/jeu/<%= data[i].id_partie%>" class="btn btn-success">
+									<i class="material-icons">login</i>
+								</a>
+							</td>
 						</tr>
 						<% } %>
 					</tbody>
 				</table>
-
 				<div>
 					<p>
-						<a href="/partie">Rejoindre une partie</a>
+						<a href="/partie">Rejoindre une partie manuellement</a>
 					</p>
 					<hr />
 					<p>
