@@ -56,16 +56,21 @@ router.get('/jeu', function (req, res, next) {
 							success: false,
 							message: "Vous n'êtes pas invités à la partie lol mdr t nul",
 						});
-					} else if (invite.status == 2) {
-						//Invitation déjà accepté
-						console.log('Invitation a déjà été refusé');
-						return res.json({ success: false, message: 'Invitation déjà refusé' });
 					} else {
 						//Le joueur est invité et rejoint la partie.
-						// TODO : Modification du status de l'invitation
+						//Récupération de 10 cartes aléatoire
+						Carte.Model.find({}, function (err, cartes) {
+							if (err) return res.json({ success: false, message: err });
+							var lesCartes = [];
+							for (var i = 0; i < 10; i++) {
+								var random = Math.floor(Math.random() * 10);
+								lesCartes.push(cartes[random]);
+							}
 
-						return res.render('jeu', {
-							id_partie: partieId,
+							return res.render('jeu', {
+								id_partie: partieId,
+								cartes: lesCartes,
+							});
 						});
 					}
 				}
