@@ -72,8 +72,7 @@ $('*[id="cartes-client"]:visible').each(function () {
 			}
 		});
 		$(this).addClass('border border-primary');
-		console.log($(this)[0].innerText.split('\n')[1]);
-		carte_wait = cartes.find((x) => x.show == $(this)[0].innerText.split('\n')[1]);
+		carte_wait = $(this);
 	});
 });
 
@@ -82,23 +81,17 @@ $('.ajout-carte').on('click', function () {
 	if (carte_wait == null) {
 		alert('Vous devez sélectionner une carte en premier');
 	} else {
+		//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
 		if ($(this).prevAll($('#timeline')).length == 0) {
 			//Ajout de la carte à droite du timeline
-			var carte_temp = $('#carte-timeline').clone();
-			carte_temp.children('h4').innerText = carte_wait['cue'];
-			carte_temp.children('h6').innerText = carte_wait['show'];
-			carte_temp.children('p').innerText = carte_wait['rep'];
-			$('#timeline').append(carte_temp.html());
+			$('#timeline').append(carte_wait.clone());
 		} else {
 			//Ajout de la carte à gauche du timeline
-			var carte_temp = $('#carte-timeline').clone();
-			carte_temp.children('h4').innerText = carte_wait['cue'];
-			carte_temp.children('h6').innerText = carte_wait['show'];
-			carte_temp.children('p').innerText = carte_wait['rep'];
-			$('#timeline').prepend(carte_temp.html());
+			$('#timeline').prepend(carte_wait.clone());
 		}
-		//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
-		//Ajout
+
 		//Suppression de la carte ajouté
+		console.log(carte_wait);
+		carte_wait.remove();
 	}
 });
