@@ -15,35 +15,66 @@
 			integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
 			crossorigin="anonymous"
 		></script>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 		<script src="/socket.io/socket.io.js"></script>
 	</head>
 	<body>
 		<div class="py-5">
-			<div class="container">
+			<div class="container-fluid">
 				<h5 class="text-center">Vous êtes connecté à la partie : <%= id_partie %></h5>
-				<p class="text-center">***<span id="tour"> C'est à votre tour de jouer</span>***</p>
+				<p class="text-center">***<span id="tour">C'est à votre tour de jouer</span>***</p>
 				<hr />
-				<h4>Ligne du temps</h4>
-				<div id="ligne-du-temps"></div>
-				<hr />
-				<div class="row hidden-md-up">
-					<% for(var i = 0; i < 5; i ++) { %>
-					<div class="d-none">
-						<div class="card" style="width: 18rem">
+				<div class="row hidden-md-up flex-wrap justify-content-around">
+					<% for(var i = 0; i < 4; i ++) { %>
+					<div class="col">
+						<div class="card" id="cartes-serveur" style="width: 20rem">
 							<div class="card-body">
-								<h4 class="card-title">Cue : <%= cartes[i].cue %></h4>
-								<h6 class="card-subtitle text-muted">Show : <%=cartes[i].show%></h6>
-								<p class="card-text p-y-1">Rep : <%=cartes[i].rep%></p>
+								<h4 class="card-title"><%= cartes[i].cue %></h4>
+								<h6 class="card-subtitle text-muted"><%=cartes[i].show%></h6>
+								<p class="card-text p-y-1 d-none"><%=cartes[i].rep%></p>
 							</div>
 						</div>
 					</div>
-					<% } %> <% for(var i = 5; i < 10; i ++) { %>
-					<div class="col-md-4">
-						<div class="card" style="width: 18rem">
+					<% } %>
+				</div>
+				<hr />
+				<div>
+					<h4 class="text-center">Ligne du temps</h4>
+					<div class="row hidden-md-up justify-content-around">
+						<div class="col-sm-1">
+							<button class="btn btn-success ajout-carte">
+								<span class="material-icons">add</span>
+							</button>
+						</div>
+						<!-- Cartes du timeline -->
+						<div id="timeline">
+							<div class="col-lg-5" id="carte-timeline">
+								<div class="card" style="width: 20rem">
+									<div class="card-body">
+										<h4 class="card-title"><%= cartes[4].cue %></h4>
+										<h6 class="card-subtitle text-muted"><%=cartes[4].show%></h6>
+										<p class="card-text p-y-1"><%=cartes[4].rep%></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-1">
+							<button class="btn btn-success ajout-carte">
+								<i class="material-icons">add</i>
+							</button>
+						</div>
+					</div>
+				</div>
+
+				<hr />
+				<div class="row hidden-md-up flex-wrap justify-content-center">
+					<% for(var i = 5; i < 9 ; i ++) { %>
+					<div class="col">
+						<div class="card" id="cartes-client" style="width: 20rem">
 							<div class="card-body">
-								<h4 class="card-title">Cue : <%= cartes[i].cue %></h4>
-								<h6 class="card-subtitle text-muted">Show : <%=cartes[i].show%></h6>
-								<p class="card-text p-y-1">Rep : <%=cartes[i].rep%></p>
+								<h4 class="card-title"><%= cartes[i].cue %></h4>
+								<h6 class="card-subtitle text-muted"><%=cartes[i].show%></h6>
+								<p class="card-text p-y-1 d-none"><%=cartes[i].rep%></p>
 							</div>
 						</div>
 					</div>

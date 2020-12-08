@@ -74,8 +74,9 @@ app.use(function (err, req, res, next) {
 });
 
 ////////////////////////////////////////////////////////////////
+
 var connect_counter = {};
-var cartes = [];
+var cartes_serveur = [];
 //Sockets handling
 io.on('connection', (socket) => {
 	//User entering a game
@@ -100,26 +101,21 @@ io.on('connection', (socket) => {
 		id_partie: partie,
 		nb_joueur: connect_counter[partie],
 	});
-	/**
-	 * Réception des cartes
-	 * DU MOMENT QU'UN UTILISATEUR EST CONNECTÉ, IL TRANSMET LES CARTES
-	 * DU SERVEUR AU SERVEUR. LES CARTES DU SERVEUR ONT DISPLAY:NONE DONC ELLES
-	 * N'APPARAISSENT PAS. c'est laite comme code mais ça marche entk
-	 */
-	socket.on('cartes', function (data) {
-		data.cartes.forEach(function (carte) {
-			cartes.push(carte);
-		});
-		console.log(cartes);
-	});
-
 	// Joueur rejoint la partie dont le numéro est en paramètre de la requête
 	socket.join(partie);
 
-	// Envoie à tous les joueurs de la même partie qu'un nouveau joueur est arrivé
-	socket.emit('nouveauJoueur', {
-		message: 'Un nouveau joueur est connecté',
-		nbJoueur: connect_counter[partie],
+	//Réception des cartes du serveur
+	socket.on('envoie-cartes-serveur', function (data) {
+		for (var i = 0; i < data.length; i++) {
+			cartes_serveur.push(data[i]);
+		}
+	});
+
+	//Listener sur quand le client click sur une carte (joue son tour)
+	socket.on('carte-click', function (data) {
+		console.log('Carte jouée : ' + data.carte.cue);
+		console.log('at position : ' + data.position);
+		//Validation de si la carte a bel et bien été placé sur la ligne du temps
 	});
 
 	//User is leaving the game
