@@ -11,11 +11,7 @@ var path = new URL(currentLocation);
 console.log(path.toString());
 var socket = io();
 
-socket.on('connection', function () {
-	console.log('You are connected to the websocket server');
-});
-
-// Événement sur le clique du bouton
-btn.addEventListener('click', function () {
-	socket.emit('messageToServer', message.value);
+socket.on('connection', function (data) {
+	console.log('You are connected to game : {' + data.id_partie + '}');
+	console.log('Nombre de joueur connecté à cette partie : ' + data.nb_joueur);
 });

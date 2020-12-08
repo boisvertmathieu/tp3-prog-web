@@ -74,28 +74,46 @@ app.use(function (err, req, res, next) {
 });
 
 ////////////////////////////////////////////////////////////////
-var connect_counter = 0;
-var gameDict = [];
+var connect_counter = {};
 //Sockets handling
 io.on('connection', (socket) => {
-
-	console.log("Socket ouvert", socket.id);
-
-
-
 	//User entering a game
-	console.log('----------- A user is connected -----------');
-	connect_counter++;
-	console.log('Nombre of user connected : ' + connect_counter);
-	socket.emit('connection');
+	console.log('\n----------- A user is connected to socket ' + socket.id + '-----------');
 
-	//TODO : Handling de la partie de carte ici
+	//Récupération du numéro de partie
+	/** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
+	 * prof ici pour récupérer l'id de la partie avec le schema d'url '/partie/jeu?param=id_partie'.
+	 * J'ai trouvé une autre manière de faire à partir des headers mais c'est plus long et plus laid.
+	 * Mais ça fonctionne.
+	 */
+	var partie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
+	if (partie in connect_counter) {
+		connect_counter[partie] += 1;
+	} else {
+		connect_counter[partie] = 1;
+	}
+	console.log('Nunber of active user : ' + connect_counter[partie] + '\n');
+
+	// Envoie d'un signal de connection au joueur
+	socket.emit('connection', {
+		id_partie: partie,
+		nb_joueur: connect_counter[partie],
+	});
+
+	// Joueur rejoint la partie dont le numéro est en paramètre de la requête
+	socket.join(partie);
+
+	// Envoie à tous les joueurs de la même partie qu'un nouveau joueur est arrivé
+	socket.emit('nouveauJoueur', {
+		message: 'Un nouveau joueur est connecté',
+		nbJoueur: connect_counter[partie],
+	});
 
 	//User is leaving the game
 	socket.on('disconnect', () => {
-		console.log('----------- User is disconnected -----------');
-		connect_counter--;
-		console.log('Number of active user : ' + connect_counter);
+		console.log('\n----------- User is disconnected -----------');
+		connect_counter[partie]--;
+		console.log('Number of active user : ' + connect_counter[partie] + '\n');
 	});
 });
 
