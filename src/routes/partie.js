@@ -56,10 +56,13 @@ router.get('/jeu', function (req, res, next) {
 							success: false,
 							message: "Vous n'êtes pas invités à la partie lol mdr t nul",
 						});
+					} else if (invite.status == 2) {
+						//Invitation déjà accepté
+						console.log('Invitation a déjà été refusé');
+						return res.json({ success: false, message: 'Invitation déjà refusé' });
 					} else {
-						//Le joueur est invité
-						console.log(invite);
-						//TODO create unique socket for the game
+						//Le joueur est invité et rejoint la partie.
+						// TODO : Modification du status de l'invitation
 
 						return res.render('jeu', {
 							id_partie: partieId,

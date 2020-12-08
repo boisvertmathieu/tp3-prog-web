@@ -26,9 +26,16 @@
 							<td><%= data[i].id_partie %></td>
 							<td><%= data[i].status %></td>
 							<td>
-								<a href="/partie/jeu?id=<%= data[i].id_partie%>" class="btn btn-success">
-									<i class="material-icons">login</i>
-								</a>
+								<form action="/joueur/partie/<%=data[i].id_partie%>" method="post">
+									<button type="submit" class="btn btn-success">
+										<i class="material-icons">login</i>
+									</button>
+								</form>
+								<form action="/joueur/no-partie/<%=data[i].id_partie%>" method="post">
+									<button type="submit" class="btn btn-danger">
+										<i class="material-icons">close</i>
+									</button>
+								</form>
 							</td>
 						</tr>
 						<% } %>

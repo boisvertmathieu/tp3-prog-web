@@ -25,21 +25,6 @@ router.get('/partie', function (req, res, next) {
 });
 
 /**
- * Permet d'accepter une invitation à une partie identifiée
- */
-router.get('/partie/:id', function (req, res, next) {
-	let id_partie = req.params.id;
-	let invitations = req.invitations;
-	let is_included = false;
-	invitations.forEach(function (invite) {
-		if (invite.id_partie == id_partie) is_included = true;
-	});
-
-	if (!is_included) return res.json({ success: false, message: "Le joueur n'a pas été invité à cette partie" });
-	else return res.json({ success: true, message: 'La partie aura lieu ici!' });
-});
-
-/**
  * Permet de créer une invitation dont les données sont contenues en body de requête
  */
 router.post('/partie', async function (req, res, next) {
@@ -98,7 +83,7 @@ router.post('/partie', async function (req, res, next) {
 /**
  * Permet d'accepter une invitation à une partie identifiée
  */
-router.put('/partie/:id', function (req, res, next) {
+router.post('/partie/:id', function (req, res, next) {
 	// Validation de si l'id de la partie correspont à une partie dont l'utilisateur
 	// a bel et bein été invité
 	let id_partie = req.params.id;
@@ -116,15 +101,15 @@ router.put('/partie/:id', function (req, res, next) {
 		{ status: 1 },
 		function (err, affected) {
 			if (err) return res.json({ success: false, message: err });
-			return res.json({
-				success: true,
-				message: 'Invitation accepté. Nombre de documents affectés: ' + affected.nModified,
-			});
+
+			//Redirection vers la partie
+			var uri = req.protocol + '://' + req.get('host') + '/partie' + '/jeu?id=' + id_partie;
+			res.redirect(uri);
 		}
 	);
 });
 
-router.put('/no-partie/:id', function (req, res, next) {
+router.post('/no-partie/:id', function (req, res, next) {
 	// Validation de si l'id de la partie correspont à une partie dont l'utilisateur
 	// a bel et bein été invité
 	let id_partie = req.params.id;
@@ -144,7 +129,7 @@ router.put('/no-partie/:id', function (req, res, next) {
 			if (err) return res.json({ success: false, message: err });
 			return res.json({
 				success: true,
-				message: 'Invitation accepté. Nombre de documents affectés: ' + affected.nModified,
+				message: 'Invitation refusé. Nombre de documents affectés: ' + affected.nModified,
 			});
 		}
 	);
