@@ -43,7 +43,7 @@
 					<!-- Grid timeline -->
 
 					<div class="col col-lg-2">
-						<button class="btn btn-success ajout-carte">
+						<button class="btn btn-success" id="ajout-carte">
 							<span class="material-icons">add</span>
 						</button>
 					</div>
@@ -62,7 +62,7 @@
 						</div>
 					</div>
 					<div class="col col-lg-2">
-						<button class="btn btn-success ajout-carte float-right">
+						<button class="btn btn-success float-right" id="ajout-carte">
 							<i class="material-icons">add</i>
 						</button>
 					</div>
@@ -71,8 +71,8 @@
 				<hr />
 				<div class="row flex-row justify-content-center align-items-center">
 					<% for(var i = 5; i < 9 ; i ++) { %>
-					<div class="col">
-						<div class="card" id="cartes-client" style="width: 14rem">
+					<div class="col p-2" id="cartes-client">
+						<div class="card" style="width: 14rem">
 							<div class="card-body">
 								<h4 class="card-title"><%= cartes[i].cue %></h4>
 								<h6 class="card-subtitle text-muted"><%=cartes[i].show%></h6>

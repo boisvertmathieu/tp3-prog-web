@@ -59,39 +59,33 @@ $('*[id="cartes-client"]:visible').each(function () {
 
 	//on click listener
 	$(this).on('click', function () {
-		// Transférer la carte à la ligne du temps
-		//if ($) $('#ligne-du-temps').append('<div class="card">' + $(this)[0].innerHTML + '</div>');
-		//socket.emit('carte-click', {
-		//	carte: une_carte,
-		//	position: position,
-		//});
 		//Suppression de la bordure de l'autre carte précédemment cliquée
 		$('*[id="cartes-client"]:visible').each(function () {
-			if ($(this).hasClass(border_class)) {
-				$(this).removeClass(border_class);
+			if ($(this).find('>:first-child').hasClass(border_class)) {
+				$(this).find('>:first-child').removeClass(border_class);
 			}
 		});
-		$(this).addClass('border border-primary');
+		$(this).find('>:first-child').addClass('border border-primary');
 		carte_wait = $(this);
 	});
 });
 
 //Listener sur le click d'un bouton d'ajouter d'un carte
-$('.ajout-carte').on('click', function () {
-	if (carte_wait == null) {
-		alert('Vous devez sélectionner une carte en premier');
-	} else {
-		//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
-		if ($(this).prevAll($('#timeline')).length == 0) {
-			//Ajout de la carte à droite du timeline
-			$('#timeline').append(carte_wait.clone());
+$('*[id="ajout-carte"]:visible').each(function () {
+	$(this).on('click', function () {
+		if (carte_wait == null) {
+			alert('Vous devez sélectionner une carte en premier');
 		} else {
-			//Ajout de la carte à gauche du timeline
-			$('#timeline').prepend(carte_wait.clone());
+			//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
+			if ($(this).hasClass('float-right')) {
+				//Ajout de la carte à droite du timeline
+				$('#timeline').append(carte_wait.clone());
+			} else {
+				//Ajout de la carte à gauche du timeline
+				$('#timeline').prepend(carte_wait.clone());
+			}
+			carte_wait.removeClass(border_class);
+			carte_wait.remove();
 		}
-
-		//Suppression de la carte ajouté
-		console.log(carte_wait);
-		carte_wait.remove();
-	}
+	});
 });
