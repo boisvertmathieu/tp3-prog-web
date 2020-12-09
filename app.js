@@ -76,11 +76,16 @@ app.use(function (err, req, res, next) {
 ////////////////////////////////////////////////////////////////
 var Carte = require('./src/models/carteSchema');
 var connect_counter = {};
+var joueurs = {};
+var joueur_nb = 1;
 var cartes_serveur = [];
+var timeline = [];
 //Sockets handling
 io.on('connection', (socket) => {
 	//User entering a game
 	console.log('\n----------- A user is connected to socket ' + socket.id + '-----------');
+	joueurs[joueur_nb] = socket.id;
+	joueur_nb++;
 
 	//Récupération du numéro de partie
 	/** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
@@ -111,6 +116,11 @@ io.on('connection', (socket) => {
 		}
 	});
 
+	//Réception de la carte du timeline au début de la partie
+	socket.on('envoie-carte-timeline', function (data) {
+		timeline.push(data.une_carte);
+	});
+
 	//Listener sur quand le client click sur une carte (joue son tour)
 	socket.on('carte-click', function (data) {
 		console.log('Carte jouée : ' + data.carte.cue);
@@ -119,12 +129,22 @@ io.on('connection', (socket) => {
 	});
 
 	//Listener sur un tour joué par le joueur
-	socket.on('tour', function (data) {
+	socket.on('carte-a-jouer', function (data) {
 		//Validation de l'existance de la carte
 		Carte.Model.find({ cue: data.cue, show: data.show, rep: data.rep }, function (err, carte) {
-			if (err) socket.emit('tour-erreur', 'Erreur lors du placement de la carte');
-			if (carte == null) socket.emit('tour-carte-null', 'Aucune carte ne correspond à la carte joué');
+			if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
+			if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
 		});
+	});
+	socket.on('tour', function (data) {
+		//Insertion de la carte ajouté dans le timeline à la position en paramètre
+		timeline.splice(data.position, 0, data.carte);
+		//Changement de tour de joueur
+		if (joueur_nb > 4) {
+			joueur_nb = 1;
+		}
+		//Attribution au prochain joueur le droit de jouer
+		io.to(joueurs[joueur_nb]).emit('tour');
 	});
 
 	//User is leaving the game
