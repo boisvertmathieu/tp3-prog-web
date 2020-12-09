@@ -74,7 +74,7 @@ app.use(function (err, req, res, next) {
 });
 
 ////////////////////////////////////////////////////////////////
-
+var Carte = require('./src/models/carteSchema');
 var connect_counter = {};
 var cartes_serveur = [];
 //Sockets handling
@@ -116,6 +116,15 @@ io.on('connection', (socket) => {
 		console.log('Carte jouée : ' + data.carte.cue);
 		console.log('at position : ' + data.position);
 		//Validation de si la carte a bel et bien été placé sur la ligne du temps
+	});
+
+	//Listener sur un tour joué par le joueur
+	socket.on('tour', function (data) {
+		//Validation de l'existance de la carte
+		Carte.Model.find({ cue: data.cue, show: data.show, rep: data.rep }, function (err, carte) {
+			if (err) socket.emit('tour-erreur', 'Erreur lors du placement de la carte');
+			if (carte == null) socket.emit('tour-carte-null', 'Aucune carte ne correspond à la carte joué');
+		});
 	});
 
 	//User is leaving the game

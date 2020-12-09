@@ -73,19 +73,67 @@ $('*[id="cartes-client"]:visible').each(function () {
 //Listener sur le click d'un bouton d'ajouter d'un carte
 $('*[id="ajout-carte"]:visible').each(function () {
 	$(this).on('click', function () {
-		if (carte_wait == null) {
+		if (!tour) {
+			alert("Ce n'est pas encore votre tour");
+		} else if (carte_wait == null) {
 			alert('Vous devez sélectionner une carte en premier');
 		} else {
+			//Récupération des infos la carte jouée
+			var cue = carte_wait.find('h4')[0].innerText;
+			var show = carte_wait.find('h6')[0].innerText;
+			var rep = carte_wait.find('p')[0].innerText;
+
+			var erreurs = false;
+			//Retour de la carte à jouer au serveur
+			socket.emit('tour', {
+				carte: { cue: cue, show: show, rep: rep },
+			});
+
+			//Validation de la présence d'erreur lors de l'ajout d'une la carte
+			socket.on('tour-erreur', function (data) {
+				erreurs = true;
+				alert(data);
+			});
+			socket.on('tour-carte-null', function (data) {
+				erreurs = true;
+				alert(data);
+			});
+
 			//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
-			if ($(this).hasClass('float-right')) {
-				//Ajout de la carte à droite du timeline
-				$('#timeline').append(carte_wait.clone());
-			} else {
-				//Ajout de la carte à gauche du timeline
-				$('#timeline').prepend(carte_wait.clone());
+			if (!erreurs) {
+				//Validation de la date de la carte (si elle est placé à la bonne place)
+				console.log($('#timeline:last-child'));
+				var rep_carte_droite = parseInt($('#timeline:last-child').children('p')[0].innerText);
+				var rep_carte_gauche = parseInt($('#timeline:first-child').children('p')[0].innerText);
+				if (rep < rep_carte_droite && rep > rep_carte_gauche) {
+					//Placement de la carte
+					if ($(this).hasClass('float-right')) {
+						//Ajout de la carte à droite du timeline
+						$('#timeline').append(carte_wait.clone());
+					} else {
+						//Ajout de la carte à gauche du timeline
+						$('#timeline').prepend(carte_wait.clone());
+					}
+
+					//Suppression de la carte jouée de l'affiche
+					carte_wait.removeClass(border_class);
+					carte_wait.remove();
+					carte_wait == null;
+					//Changement du tour
+					tour = false;
+				} else {
+					erreurs = true;
+					alert('Carte placé au mauvais endroit');
+				}
 			}
-			carte_wait.removeClass(border_class);
-			carte_wait.remove();
 		}
 	});
+});
+
+//Réception du tour du serveur
+socket.on('tour', function (data) {
+	//Placement de la carte joué par le serveur
+
+	//Changement du tour
+	tour = true;
 });
