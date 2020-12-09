@@ -1,8 +1,14 @@
-var message = document.getElementById('message');
 var btn = document.getElementById('send');
 var tour = document.getElementById('tour');
 var ligne = document.getElementById('ligne-du-temps');
 var cartes = document.getElementsByClassName('card');
+
+//Messagerie
+var btnSendMsg = document.getElementById('btnMessage');
+var message = document.getElementById('message');
+var username = document.getElementById('username');
+var chatBox = document.getElementById('chatBox');
+
 
 // Vérification
 var user_cards = document.getElementsByClassName('user-cards');
@@ -136,4 +142,32 @@ socket.on('tour', function (data) {
 
 	//Changement du tour
 	tour = true;
+});
+
+// *******************************************************
+// 						Messagerie
+// *******************************************************
+
+btnSendMsg.addEventListener('click',function(){
+	if (message.value != '') {
+		socket.emit('chat', {
+			message: message.value,
+			user: username.value
+		});
+		message.value = '';
+	}
+});
+
+socket.on('chat', function(data){
+	if (data.user == "superUser") {
+		chatBox.innerHTML += '<div class="row d-flex justify-content-center">' +
+								'<p class="font-italic text-muted">'+ data.message + '</p>' +
+							 '</div>'
+	} else {
+		var color = (data.user == username.value) ? "text-primary" : "text-info";
+
+		chatBox.innerHTML += '<div class="row">' +
+			'<p class="' + color +'"><strong>'+data.user+': </strong>'+data.message+'</p>' +
+			'</div>'
+	}
 });

@@ -58,18 +58,9 @@ router.get('/jeu', function (req, res, next) {
 						});
 					} else {
 						//Le joueur est invité et rejoint la partie.
-						//Récupération de 9 cartes aléatoire (4 par joueurs et 1 cartes commençant le timeline)
-						Carte.Model.find({}, function (err, cartes) {
-							if (err) return res.json({ success: false, message: err });
-							var cartes_joueur = [];
-							for (var i = 0; i < 9; i++) {
-								var random = Math.floor(Math.random() * cartes.length - 1);
-								cartes_joueur.push(cartes[random]);
-							}
-							return res.render('jeu', {
-								id_partie: partieId,
-								cartes: cartes_joueur,
-							});
+						return res.render('jeujg', {
+							id_partie: partieId,
+							user: req.user
 						});
 					}
 				}

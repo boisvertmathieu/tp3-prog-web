@@ -133,6 +133,13 @@ io.on('connection', (socket) => {
 		connect_counter[partie]--;
 		console.log('Number of active user : ' + connect_counter[partie] + '\n');
 	});
+
+	//Messagerie
+	socket.on('chat', function(data){
+		console.log('données reçues '+data);
+		io.sockets.to(partie).emit('chat', data);
+	});
+
 });
 
 http.listen(utils.normalizePort(process.env.PORT || '3000'), () => {
