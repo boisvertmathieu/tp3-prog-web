@@ -50,6 +50,8 @@ var tour = true;
 var carte_wait;
 var cartes = [];
 var border_class = 'border border-primary';
+
+//Listener sur le click d'une carte pour la sélectionner
 $('*[id="cartes-client"]:visible').each(function () {
 	var cue = $(this)[0].innerText.split('\n')[0];
 	var show = $(this)[0].innerText.split('\n')[1];
@@ -99,32 +101,23 @@ $('*[id="ajout-carte"]:visible').each(function () {
 				alert(data);
 			});
 
-			//Ajoute carte_wait au timeline et ajoute des bouton d'ajout à droite et gauche
+			//Ajout de la carte à la position cliqué
 			if (!erreurs) {
-				//Validation de la date de la carte (si elle est placé à la bonne place)
-				console.log($('#timeline:last-child'));
-				var rep_carte_droite = parseInt($('#timeline:last-child').children('p')[0].innerText);
-				var rep_carte_gauche = parseInt($('#timeline:first-child').children('p')[0].innerText);
-				if (rep < rep_carte_droite && rep > rep_carte_gauche) {
-					//Placement de la carte
-					if ($(this).hasClass('float-right')) {
-						//Ajout de la carte à droite du timeline
-						$('#timeline').append(carte_wait.clone());
-					} else {
-						//Ajout de la carte à gauche du timeline
-						$('#timeline').prepend(carte_wait.clone());
-					}
-
-					//Suppression de la carte jouée de l'affiche
-					carte_wait.removeClass(border_class);
-					carte_wait.remove();
-					carte_wait == null;
-					//Changement du tour
-					tour = false;
-				} else {
-					erreurs = true;
-					alert('Carte placé au mauvais endroit');
-				}
+				var btn_clique = $(this);
+				$('#timeline')
+					.children('div')
+					.each(function () {
+						//Validation de quel child du timeline correspond au bouton cliqué
+						if ($(this).find('>:first-child').is(btn_clique)) {
+							//Validation de si le bouton cliqué est aux bouts du timeline
+							$(this).clone(true).insertAfter($(this));
+							$(this).clone(true).insertBefore($(this));
+							$(this).replaceWith(carte_wait.clone());
+						}
+					});
+			} else {
+				erreurs = true;
+				alert('Carte placé au mauvais endroit');
 			}
 		}
 	});

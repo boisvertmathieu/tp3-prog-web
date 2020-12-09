@@ -62,7 +62,7 @@ router.get('/jeu', function (req, res, next) {
 						Carte.Model.find({}, function (err, cartes) {
 							if (err) return res.json({ success: false, message: err });
 							var cartes_joueur = [];
-							for (var i = 0; i < 9; i++) {
+							for (var i = 0; i < 11; i++) {
 								var random = Math.floor(Math.random() * cartes.length - 1);
 								cartes_joueur.push(cartes[random]);
 							}
