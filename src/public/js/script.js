@@ -36,7 +36,7 @@ socket.on('getUserInfo', function () {
 // 						Messagerie
 // *******************************************************
 
-$('#btnSendMsg').on('click', function () {
+$('#btnMessage').on('click', function () {
     if (message.value != '') {
         socket.emit('chat', {
             message: message.value,
