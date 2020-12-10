@@ -80,9 +80,9 @@ socket.on('startError', function (data) {
 socket.on('startGame', function (data) {
     if (userId == data.userId) {
         //Affichage de la carte de timeline
-        drawTimeline(data.timeline);
         drawHand(data.cartes);
     }
+    drawTimeline(data.timeline);
     addGameEventListener(data);
 
     //Envoie de la première carte du timeline au serveur avant la partie
@@ -197,7 +197,7 @@ function addGameEventListener(data) {
                 var carte = {
                     cue: cue,
                     show: show,
-                    rep: rep
+                    rep: parseInt(rep)
                 };
 
                 //Récupération de la position à laquelle la carte veut être placée
@@ -223,8 +223,10 @@ function addGameEventListener(data) {
 }
 
 socket.on('refresh', function (data) {
+    if (userId == data.userId) {
+        drawHand(data.cartes);
+    }
     drawTimeline(data.timeline);
-    drawHand(data.cartes);
     addGameEventListener(data);
 });
 /*

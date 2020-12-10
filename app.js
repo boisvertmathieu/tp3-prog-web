@@ -255,18 +255,18 @@ io.on('connection', (socket) => {
                 }
             }
 
+            //TODO : Distribuer une carte au hasard si le user a placé sa carte à la mauvaise place
+
             if (!erreurs) {
                 //Insertion de la carte ajouté dans le timeline à la position en paramètre
                 dictParties[idPartie].timeline.splice(data.position, 0, data.carte);
                 //TODO : Changement de tour de joueur
 
                 //Suppression de la carte de la main du joueur
-                var cartes = dictParties[idPartie].joueurs[data.userId].cartes;
                 var index = 0;
-                cartes.forEach(function (carte) {
-                    if (carte.cue == data.carte.cue ||
-                        carte.show == data.carte.show ||
-                        parseInt(carte.rep) == parseInt(data.carte.rep)) {
+                dictParties[idPartie].joueurs[data.userId].cartes.forEach(function (carte) {
+                    if (carte.cue == data.carte.cue && carte.show == data.carte.show &&
+                        carte.rep == data.carte.rep) {
                         dictParties[idPartie].joueurs[data.userId].cartes.splice(index, 1);
                     } else {
                         index++;
@@ -275,8 +275,8 @@ io.on('connection', (socket) => {
 
                 //Refresh des informations des joueurs
                 Object.keys(dictParties[idPartie].joueurs).forEach(key => {
-                    console.log(dictParties[idPartie].joueurs[key].cartes);
                     io.sockets.to(idPartie).emit('refresh', {
+                        userId: key,
                         timeline: dictParties[idPartie].timeline,
                         cartes: dictParties[idPartie].joueurs[key].cartes
                     });
