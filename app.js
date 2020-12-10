@@ -103,11 +103,6 @@ io.on('connection', (socket) => {
     console.log('\n----------- A user is connected with socket ' + socket.id + '-----------');
 
     //Récupération du numéro de partie
-    /** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
-     * prof ici pour récupérer l'id de la partie avec le schema d'url '/partie/jeu?param=id_partie'.
-     * J'ai trouvé une autre manière de faire à partir des headers mais c'est plus long et plus laid.
-     * Mais ça fonctionne.
-     */
     var idPartie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
 
     //Création de la partie si elle n'existe pas
@@ -117,7 +112,8 @@ io.on('connection', (socket) => {
             nbConnect: 1,
             //Liste des objets joueurs
             joueurs: {},
-            timeline: []
+            timeline: [],
+            tour: {}
         };
     } else {
         dictParties[idPartie].nbConnect++;
@@ -126,7 +122,7 @@ io.on('connection', (socket) => {
     // Joueur rejoint la partie dont le numéro est en paramètre de la requête
     socket.join(idPartie);
 
-    console.log('Number of ahttp://localhost:3000/partie/jeu?id=5fac55a764a4c5756e64fc2dctive users : ' + dictParties[idPartie].nbConnect + '\n');
+    console.log('Number of active users : ' + dictParties[idPartie].nbConnect + '\n');
 
     //Demande d'info sur le joueur
     //pour l'ajouter a la partie
@@ -164,13 +160,13 @@ io.on('connection', (socket) => {
         });
     }
 
-
     //Démarrage de partie
     socket.on('requestStart', function (data) {
         //Vérification que la requête est fait par un admin et qu'il
         //y a plus qu'un joueur
         if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
             if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
+                console.log('game starting');
                 startGame();
 
             } else {
@@ -191,11 +187,11 @@ io.on('connection', (socket) => {
         //Choix de la carte de départ
         Carte.Model.findOneRandom(function (err, result) {
             if (!err) {
-                console.log("Timeline default card " + result); // 1 element
                 dictParties[idPartie].timeline = [result];
             }
         });
 
+        var idTour = 0
         // Génération de 5 cartes par joueur
         Object.keys(dictParties[idPartie].joueurs).forEach(key => {
             Carte.Model.findRandom({}, {}, {
@@ -203,9 +199,19 @@ io.on('connection', (socket) => {
             }, function (err, results) {
                 if (err) console.log(err);
                 else {
-                    console.log(dictParties[idPartie].joueurs[key]);
+                    //Génération des infos nécessaires pour le déroulement de la partie
+                    //idTour, détermine l'ordre du joueur
+                    dictParties[idPartie].tour[idTour] = key; //key est l'id du joueur
+
+                    //Cartes
                     dictParties[idPartie].joueurs[key].cartes = results;
-                    console.log("Results : " + dictParties[idPartie].joueurs[key].cartes);
+
+                    //Envoi des infos
+                    io.sockets.to(idPartie).emit('startGame', {
+                        userId: key,
+                        timeline: dictParties[idPartie].timeline,
+                        cartes: dictParties[idPartie].joueurs[key].cartes
+                    });
 
                 }
 

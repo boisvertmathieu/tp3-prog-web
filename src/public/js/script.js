@@ -12,6 +12,10 @@ var username = document.getElementById('username').value;
 var userId = document.getElementById('userId').value;
 var userAdmin = document.getElementById('userAdmin').value;
 
+//Affichage
+var timelineAffiche = document.getElementById('timeline');
+var userCards = document.getElementById('playerHand');
+
 var debugMode = true;
 
 // Connection au serveur
@@ -61,7 +65,7 @@ socket.on('chat', function (data) {
 // *******************************************************
 
 //Demande de demarrage de la partie
-$('#btnStart').on('click', function () {
+$('#startBtn').on('click', function () {
     socket.emit('requestStart', {
         userId: userId,
     });
@@ -73,6 +77,79 @@ socket.on('startError', function (data) {
     }
 });
 
+socket.on('startGame', function (data) {
+    if (userId == data.userId) {
+        //Affichage de la carte de timeline
+        drawTimeline(data.timeline);
+        drawHand(data.cartes);
+    }
+});
+
+
+// *******************************************************
+// 				Fonctions d'affichage
+// *******************************************************
+
+function drawHand(cartesEnMain) {
+    userCards.innerHTML = "";
+    cartesEnMain.forEach(element => {
+        userCards.innerHTML += drawCarte(element, false, debugMode);
+    });
+
+}
+
+// Fonction qui redessine l'entièreté de la timeline
+function drawTimeline(cartesDeTimeline) {
+    timelineAffiche.innerHTML = ""; //Vide l'objet timeline
+    //Ajout du premier bouton
+    timelineAffiche.innerHTML += drawAddButton();
+
+    //Ajout des cartes
+    cartesDeTimeline.forEach(element => {
+        timelineAffiche.innerHTML += drawCarte(element, true, true);
+        timelineAffiche.innerHTML += drawAddButton();
+    });
+
+    //TODO refaire les event listeners
+
+}
+
+//Retournes un bouton a afficher
+function drawAddButton() {
+    return '<div class="col col-lg">\n' +
+        '                                <button class="btn btn-success" id="ajout-carte">\n' +
+        '                                    <span class="material-icons">add</span>\n' +
+        '                                </button>\n' +
+        '                            </div>'
+}
+
+//Retourne une carte, showDate est une bool pour montrer la date
+function drawCarte(carte, blnTimeline, showDate) {
+    var carteType = 'carte-client';
+    var cardColor = 'bg-success';
+    if (blnTimeline) {
+        carteType = 'carte-timeline';
+        cardColor = 'bg-info';
+    };
+
+    var carteString =
+        '<div class=" col py-2" id=" ' + carteType + '">\n' +
+        '     <div class="card" style="width: 14rem">\n' +
+        '             <div class="card-body ' + cardColor + '">\n';
+
+    carteString += '<h4 class="card-title">'+ carte.cue +'</h4>';
+    carteString += '<h6 class="card-title">'+ carte.show +'</h6>';
+
+    if (showDate) {
+        carteString += '<p className="card-text">' + carte.rep + '</p>';
+    }
+
+    carteString += '</div>\n' +
+        '           </div>\n' +
+        '           </div>';
+
+    return carteString;
+}
 
 // Recherche de chaque cartes du joueur et
 // ajout de click listener sur chacun des cartes du joueur
