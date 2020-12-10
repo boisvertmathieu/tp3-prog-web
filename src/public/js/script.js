@@ -63,11 +63,21 @@ socket.on('chat', function(data){
 	}
 })
 
+// *******************************************************
+// 				Demarrage de la partie
+// *******************************************************
+
 //Demande de demarrage de la partie
 btnStart.addEventListener('click',function(){
 	socket.emit("requestStart", {
 		userId: userId
 	})
+});
+
+socket.on('startError', function (data) {
+	if (userId == data.userId) {
+		alert(data.message);
+	}
 });
 
 

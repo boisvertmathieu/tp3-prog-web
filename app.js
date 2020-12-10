@@ -86,6 +86,11 @@ var cartes_serveur = [];
  */
 var dictParties = {}
 
+// Dictionnaire gardant comme clé le socket de l'utilisateur
+// et comme valeur son id, pour pouvoir le retrouver lors de
+// la déconnexion
+var playerSocket = {}
+
 //Sockets handling
 io.on('connection', (socket) => {
 	//User entering a game
@@ -126,17 +131,30 @@ io.on('connection', (socket) => {
 		if (!(userId in dictParties[idPartie].joueurs)) {
 			dictParties[idPartie].joueurs[userId] = {
 				username: data.username,
-				isAdmin: data.isAdmin
+				isAdmin: data.userAdmin
 			}
 		}
+
+		playerSocket[socket.id] = userId;
+
+		consoleMessage(data.username + " c'est connecté.");
 
 		console.log(dictParties[idPartie].joueurs[userId].username + " connected");
 	});
 
-	//Messagerie
+	//
+	// Messagerie
+	//
 	socket.on('chat', function(data){
 		io.sockets.to(idPartie).emit('chat', data);
 	});
+
+	function consoleMessage(message) {
+		io.sockets.to(idPartie).emit('chat', {
+			user: 'superUser',
+			message: message
+		});
+	}
 
 
 	//Démarrage de partie
@@ -144,9 +162,26 @@ io.on('connection', (socket) => {
 		//Vérification que la requête est fait par un admin et qu'il
 		//y a plus qu'un joueur
 		if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
+			if (dictParties[idPartie].nbConnect > 1) {
 
+
+			} else {
+				io.sockets.to(idPartie).emit('startError', {
+					userId: data.userId,
+					message: "Il n'y à pas assez de joueurs pour débuter"
+				});
+			};
+		} else {
+			io.sockets.to(idPartie).emit('startError', {
+				userId: data.userId,
+				message: "Vous n'êtes pas admin, impossible de démarrer la partie"
+			});
 		}
 	});
+
+	function startGame() {
+		// Génération de 5 cartes par joueur
+	}
 
 
 
@@ -177,9 +212,13 @@ io.on('connection', (socket) => {
 	socket.on('disconnect', () => {
 		console.log('\n----------- User is disconnected -----------');
 		dictParties[idPartie].nbConnect--;
+
 		if (dictParties[idPartie].nbConnect > 0) {
+			consoleMessage(dictParties[idPartie].joueurs[playerSocket[socket.id]].username + " c'est déconnecté.");
+			delete playerSocket[socket.id];
 			console.log('Number of active user : ' + dictParties[idPartie].nbConnect + '\n');
 		} else {
+			delete playerSocket[socket.id];
 			delete dictParties[idPartie];
 			console.log("Partie vide, destruction de la partie : " + idPartie);
 		};
