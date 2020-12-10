@@ -44,13 +44,12 @@ router.get('/partie/inviter', function (req, res, next) {
 });
 
 router.post('/partie/inviter', function (req, res, next) {
-    var usernames = req.body.invitation;
+    var usernames = [];
+    usernames.push(req.body.invitation);
+    console.log(usernames);
     //Plus petit ou égal à 3 parce que dans le cas où on invite une seule personne, l'attribut
     //length de 'usernames' va être la longeur du nom du joueur
-    if (usernames.length > 3) {
-        usernames = [];
-        usernames.push(req.body.invitation);
-    } else {
+    if (usernames.length <= 3) {
         //Création d'une partie dans la BD
         let partie = new Partie.Model({
             date_heure: Date.now()

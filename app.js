@@ -82,6 +82,11 @@ app.use(function (err, req, res, next) {
 ////////////////////////////////////////////////////////////////
 var Carte = require('./src/models/carteSchema');
 var cartes_serveur = [];
+
+/**
+ * Tableau faisant le suivis des cartes placées par les joueurs dans
+ * le timeline
+ */
 var timeline = [];
 
 // Dict info joueurs
@@ -90,12 +95,12 @@ var timeline = [];
  * et qui contient un dictionnaire ayant tous les infos
  * nécessaires pour la partie
  */
-var dictParties = {}
+var dictParties = {};
 
 // Dictionnaire gardant comme clé le socket de l'utilisateur
 // et comme valeur son id, pour pouvoir le retrouver lors de
 // la déconnexion
-var playerSocket = {}
+var playerSocket = {};
 
 //Sockets handling
 io.on('connection', (socket) => {
@@ -117,7 +122,7 @@ io.on('connection', (socket) => {
         };
     } else {
         dictParties[idPartie].nbConnect++;
-    };
+    }
 
     // Joueur rejoint la partie dont le numéro est en paramètre de la requête
     socket.join(idPartie);
@@ -136,7 +141,7 @@ io.on('connection', (socket) => {
                 username: data.username,
                 isAdmin: data.userAdmin,
                 cartes: []
-            }
+            };
         }
 
         playerSocket[socket.id] = userId;
@@ -168,13 +173,15 @@ io.on('connection', (socket) => {
             if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
                 console.log('game starting');
                 startGame();
+            }
+            startGame();
+            // } else {
+            //     io.sockets.to(idPartie).emit('startError', {
+            //         userId: data.userId,
+            //         message: "Il n'y à pas assez de joueurs pour débuter"
+            //     });
+            // }
 
-            } else {
-                io.sockets.to(idPartie).emit('startError', {
-                    userId: data.userId,
-                    message: "Il n'y à pas assez de joueurs pour débuter"
-                });
-            };
         } else {
             io.sockets.to(idPartie).emit('startError', {
                 userId: data.userId,
@@ -191,7 +198,7 @@ io.on('connection', (socket) => {
             }
         });
 
-        var idTour = 0
+        var idTour = 0;
         // Génération de 5 cartes par joueur
         Object.keys(dictParties[idPartie].joueurs).forEach(key => {
             Carte.Model.findRandom({}, {}, {
@@ -207,6 +214,7 @@ io.on('connection', (socket) => {
                     dictParties[idPartie].joueurs[key].cartes = results;
 
                     //Envoi des infos
+                    console.log(dictParties[idPartie].timeline);
                     io.sockets.to(idPartie).emit('startGame', {
                         userId: key,
                         timeline: dictParties[idPartie].timeline,
@@ -219,25 +227,9 @@ io.on('connection', (socket) => {
         });
     }
 
-
-
-    //Réception des cartes du serveur
-    socket.on('envoie-cartes-serveur', function (data) {
-        for (var i = 0; i < data.length; i++) {
-            cartes_serveur.push(data[i]);
-        }
-    });
-
-    //Réception de la carte du timeline au début de la partie
-    socket.on('envoie-carte-timeline', function (data) {
-        timeline.push(data.une_carte);
-    });
-
-    //Listener sur quand le client click sur une carte (joue son tour)
-    socket.on('carte-click', function (data) {
-        console.log('Carte jouée : ' + data.carte.cue);
-        console.log('at position : ' + data.position);
-        //Validation de si la carte a bel et bien été placé sur la ligne du temps
+    //Listener sur l'envoie de la première carte du timeline avant le début de la partie
+    socket.on('timeline-carte-debut', function (data) {
+        timeline.push(data);
     });
 
     //Listener sur un tour joué par le joueur
@@ -251,10 +243,11 @@ io.on('connection', (socket) => {
             if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
             if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
         });
-    });
-    socket.on('tour', function (data) {
+
         //Insertion de la carte ajouté dans le timeline à la position en paramètre
         timeline.splice(data.position, 0, data.carte);
+        console.log(timeline);
+
         //Changement de tour de joueur
     });
 
@@ -271,7 +264,8 @@ io.on('connection', (socket) => {
             delete playerSocket[socket.id];
             delete dictParties[idPartie];
             console.log("Partie vide, destruction de la partie : " + idPartie);
-        };
+        }
+
     });
 
 });
