@@ -32,18 +32,24 @@ app.set('view engine', 'ejs');
 
 //middlewares
 var middlewares = [
-	bodyParser.urlencoded({ extended: true }),
-	bodyParser.json(),
-	express.json(),
-	express.urlencoded({ extended: false }),
-	express.static(path.join(__dirname, '/src/public')),
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		cookie: { maxAge: 604800 },
-	}),
-	cookieParser(),
+    bodyParser.urlencoded({
+        extended: true
+    }),
+    bodyParser.json(),
+    express.json(),
+    express.urlencoded({
+        extended: false
+    }),
+    express.static(path.join(__dirname, '/src/public')),
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 604800
+        },
+    }),
+    cookieParser(),
 ];
 app.use(middlewares);
 
@@ -59,104 +65,218 @@ app.use('/partie', partieRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 ////////////////////////////////////////////////////////////////
 var Carte = require('./src/models/carteSchema');
-var connect_counter = {};
-var joueurs = {};
-var joueur_nb = 1;
 var cartes_serveur = [];
-var timeline = [];
+
+
+// Dict info joueurs
+/**
+ * Dictionnaire ayant comme clé la partie (id)
+ * et qui contient un dictionnaire ayant tous les infos
+ * nécessaires pour la partie
+ */
+var dictParties = {}
+
+// Dictionnaire gardant comme clé le socket de l'utilisateur
+// et comme valeur son id, pour pouvoir le retrouver lors de
+// la déconnexion
+var playerSocket = {}
+
 //Sockets handling
 io.on('connection', (socket) => {
-	//User entering a game
-	console.log('\n----------- A user is connected to socket ' + socket.id + '-----------');
-	joueurs[joueur_nb] = socket.id;
-	joueur_nb++;
+    //User entering a game
+    console.log('\n----------- A user is connected with socket ' + socket.id + '-----------');
 
-	//Récupération du numéro de partie
-	/** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
-	 * prof ici pour récupérer l'id de la partie avec le schema d'url '/partie/jeu?param=id_partie'.
-	 * J'ai trouvé une autre manière de faire à partir des headers mais c'est plus long et plus laid.
-	 * Mais ça fonctionne.
-	 */
-	var partie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
-	if (partie in connect_counter) {
-		connect_counter[partie] += 1;
-	} else {
-		connect_counter[partie] = 1;
-	}
-	console.log('Nunber of active user : ' + connect_counter[partie] + '\n');
+    //Récupération du numéro de partie
+    /** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
+     * prof ici pour récupérer l'id de la partie avec le schema d'url '/partie/jeu?param=id_partie'.
+     * J'ai trouvé une autre manière de faire à partir des headers mais c'est plus long et plus laid.
+     * Mais ça fonctionne.
+     */
+    var idPartie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
 
-	// Envoie d'un signal de connection au joueur
-	socket.emit('connection', {
-		id_partie: partie,
-		nb_joueur: connect_counter[partie],
-	});
-	// Joueur rejoint la partie dont le numéro est en paramètre de la requête
-	socket.join(partie);
+    //Création de la partie si elle n'existe pas
+    if (!(idPartie in dictParties)) {
+        dictParties[idPartie] = {
+            //Nb de connections actives
+            nbConnect: 1,
+            //Liste des objets joueurs
+            joueurs: {},
+            timeline: []
+        };
+    } else {
+        dictParties[idPartie].nbConnect++;
+    };
 
-	//Réception des cartes du serveur
-	socket.on('envoie-cartes-serveur', function (data) {
-		for (var i = 0; i < data.length; i++) {
-			cartes_serveur.push(data[i]);
-		}
-	});
+    // Joueur rejoint la partie dont le numéro est en paramètre de la requête
+    socket.join(idPartie);
 
-	//Réception de la carte du timeline au début de la partie
-	socket.on('envoie-carte-timeline', function (data) {
-		timeline.push(data.une_carte);
-	});
+    console.log('Number of active users : ' + dictParties[idPartie].nbConnect + '\n');
 
-	//Listener sur quand le client click sur une carte (joue son tour)
-	socket.on('carte-click', function (data) {
-		console.log('Carte jouée : ' + data.carte.cue);
-		console.log('at position : ' + data.position);
-		//Validation de si la carte a bel et bien été placé sur la ligne du temps
-	});
+    //Demande d'info sur le joueur
+    //pour l'ajouter a la partie
+    socket.emit("getUserInfo");
+    socket.on("returnUserInfo", function (data) {
+        //Vérification pour voir si l'utilisateur existe
+        var userId = data.userId;
 
-	//Listener sur un tour joué par le joueur
-	socket.on('carte-a-jouer', function (data) {
-		//Validation de l'existance de la carte
-		Carte.Model.find({ cue: data.cue, show: data.show, rep: data.rep }, function (err, carte) {
-			if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
-			if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
-		});
-	});
-	socket.on('tour', function (data) {
-		//Insertion de la carte ajouté dans le timeline à la position en paramètre
-		timeline.splice(data.position, 0, data.carte);
-		//Changement de tour de joueur
-		if (joueur_nb > 4) {
-			joueur_nb = 1;
-		}
-		//Attribution au prochain joueur le droit de jouer
-		io.to(joueurs[joueur_nb]).emit('tour');
-	});
+        if (!(userId in dictParties[idPartie].joueurs)) {
+            dictParties[idPartie].joueurs[userId] = {
+                username: data.username,
+                isAdmin: data.userAdmin,
+                cartes: []
+            }
+        }
 
-	//User is leaving the game
-	socket.on('disconnect', () => {
-		console.log('\n----------- User is disconnected -----------');
-		connect_counter[partie]--;
-		console.log('Number of active user : ' + connect_counter[partie] + '\n');
-	});
+        playerSocket[socket.id] = userId;
+
+        consoleMessage(data.username + " c'est connecté.");
+
+        console.log(dictParties[idPartie].joueurs[userId].username + " connected");
+    });
+
+    //
+    // Messagerie
+    //
+    socket.on('chat', function (data) {
+        io.sockets.to(idPartie).emit('chat', data);
+    });
+
+    function consoleMessage(message) {
+        io.sockets.to(idPartie).emit('chat', {
+            user: 'superUser',
+            message: message
+        });
+    }
+
+
+    //Démarrage de partie
+    socket.on('requestStart', function (data) {
+        //Vérification que la requête est fait par un admin et qu'il
+        //y a plus qu'un joueur
+        if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
+            if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
+                startGame();
+
+            } else {
+                io.sockets.to(idPartie).emit('startError', {
+                    userId: data.userId,
+                    message: "Il n'y à pas assez de joueurs pour débuter"
+                });
+            };
+        } else {
+            io.sockets.to(idPartie).emit('startError', {
+                userId: data.userId,
+                message: "Vous n'êtes pas admin, impossible de démarrer la partie"
+            });
+        }
+    });
+
+    function startGame() {
+        //Choix de la carte de départ
+        Carte.Model.findOneRandom(function (err, result) {
+            if (!err) {
+                console.log("Timeline default card " + result); // 1 element
+                dictParties[idPartie].timeline = [result];
+            }
+        });
+
+        // Génération de 5 cartes par joueur
+        Object.keys(dictParties[idPartie].joueurs).forEach(key => {
+            Carte.Model.findRandom({}, {}, {
+                limit: 5
+            }, function (err, results) {
+                if (err) console.log(err);
+                else {
+                    console.log(dictParties[idPartie].joueurs[key]);
+                    dictParties[idPartie].joueurs[key].cartes = results;
+                    console.log("Results : " + dictParties[idPartie].joueurs[key].cartes);
+
+                }
+
+            });
+        });
+    }
+
+
+
+    //Réception des cartes du serveur
+    socket.on('envoie-cartes-serveur', function (data) {
+        for (var i = 0; i < data.length; i++) {
+            cartes_serveur.push(data[i]);
+        }
+    });
+
+    //Réception de la carte du timeline au début de la partie
+    socket.on('envoie-carte-timeline', function (data) {
+        timeline.push(data.une_carte);
+    });
+
+    //Listener sur quand le client click sur une carte (joue son tour)
+    socket.on('carte-click', function (data) {
+        console.log('Carte jouée : ' + data.carte.cue);
+        console.log('at position : ' + data.position);
+        //Validation de si la carte a bel et bien été placé sur la ligne du temps
+    });
+
+    //Listener sur un tour joué par le joueur
+    socket.on('carte-a-jouer', function (data) {
+        //Validation de l'existance de la carte
+        Carte.Model.find({
+            cue: data.cue,
+            show: data.show,
+            rep: data.rep
+        }, function (err, carte) {
+            if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
+            if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
+        });
+    });
+    socket.on('tour', function (data) {
+        //Insertion de la carte ajouté dans le timeline à la position en paramètre
+        timeline.splice(data.position, 0, data.carte);
+        //Changement de tour de joueur
+        if (joueur_nb > 4) {
+            joueur_nb = 1;
+        }
+        //Attribution au prochain joueur le droit de jouer
+        io.to(joueurs[joueur_nb]).emit('tour');
+    });
+
+    //User is leaving the game
+    socket.on('disconnect', () => {
+        console.log('\n----------- User is disconnected -----------');
+        dictParties[idPartie].nbConnect--;
+
+        if (dictParties[idPartie].nbConnect > 0) {
+            consoleMessage(dictParties[idPartie].joueurs[playerSocket[socket.id]].username + " c'est déconnecté.");
+            delete playerSocket[socket.id];
+            console.log('Number of active user : ' + dictParties[idPartie].nbConnect + '\n');
+        } else {
+            delete playerSocket[socket.id];
+            delete dictParties[idPartie];
+            console.log("Partie vide, destruction de la partie : " + idPartie);
+        };
+    });
+
 });
 
 http.listen(utils.normalizePort(process.env.PORT || '3000'), () => {
-	console.log('Listening on *:3000');
+    console.log('Listening on *:3000');
 });
 
 module.exports = app;
