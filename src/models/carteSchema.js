@@ -1,4 +1,5 @@
 let mongoose = require('mongoose');
+let random = require('mongoose-simple-random');
 
 const Schema = mongoose.Schema;
 const CarteSchema = new Schema({
@@ -15,6 +16,8 @@ const CarteSchema = new Schema({
 		required: true,
 	},
 });
+
+CarteSchema.plugin(random);
 
 let Carte = mongoose.model('Carte', CarteSchema);
 

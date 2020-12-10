@@ -110,7 +110,8 @@ io.on('connection', (socket) => {
 			//Nb de connections actives
 			nbConnect: 1,
 			//Liste des objets joueurs
-			joueurs: {}
+			joueurs: {},
+			timeline: []
 		};
 	} else {
 		dictParties[idPartie].nbConnect++;
@@ -131,7 +132,8 @@ io.on('connection', (socket) => {
 		if (!(userId in dictParties[idPartie].joueurs)) {
 			dictParties[idPartie].joueurs[userId] = {
 				username: data.username,
-				isAdmin: data.userAdmin
+				isAdmin: data.userAdmin,
+				cartes: []
 			}
 		}
 
@@ -162,8 +164,8 @@ io.on('connection', (socket) => {
 		//Vérification que la requête est fait par un admin et qu'il
 		//y a plus qu'un joueur
 		if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
-			if (dictParties[idPartie].nbConnect > 1) {
-
+			if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
+				startGame();
 
 			} else {
 				io.sockets.to(idPartie).emit('startError', {
@@ -180,7 +182,27 @@ io.on('connection', (socket) => {
 	});
 
 	function startGame() {
+		//Choix de la carte de départ
+		Carte.Model.findOneRandom(function(err, result) {
+			if (!err) {
+				console.log("Timeline default card " + result); // 1 element
+				dictParties[idPartie].timeline = [result];
+			}
+		});
+
 		// Génération de 5 cartes par joueur
+		Object.keys(dictParties[idPartie].joueurs).forEach(key => {
+			Carte.Model.findRandom({},{},{limit: 5}, function (err, results) {
+				if (err) console.log(err);
+				else {
+					console.log(dictParties[idPartie].joueurs[key]);
+					dictParties[idPartie].joueurs[key].cartes = results;
+					console.log("Results : " +dictParties[idPartie].joueurs[key].cartes );
+
+				}
+
+			});
+		});
 	}
 
 
