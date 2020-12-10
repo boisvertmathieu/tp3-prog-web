@@ -83,11 +83,6 @@ app.use(function (err, req, res, next) {
 var Carte = require('./src/models/carteSchema');
 var cartes_serveur = [];
 
-/**
- * Tableau faisant le suivis des cartes placées par les joueurs dans
- * le timeline
- */
-var timeline = [];
 
 // Dict info joueurs
 /**
@@ -214,7 +209,6 @@ io.on('connection', (socket) => {
                     dictParties[idPartie].joueurs[key].cartes = results;
 
                     //Envoi des infos
-                    console.log(dictParties[idPartie].timeline);
                     io.sockets.to(idPartie).emit('startGame', {
                         userId: key,
                         timeline: dictParties[idPartie].timeline,
@@ -227,28 +221,69 @@ io.on('connection', (socket) => {
         });
     }
 
-    //Listener sur l'envoie de la première carte du timeline avant le début de la partie
-    socket.on('timeline-carte-debut', function (data) {
-        timeline.push(data);
-    });
-
     //Listener sur un tour joué par le joueur
-    socket.on('carte-a-jouer', function (data) {
-        //Validation de l'existance de la carte
-        Carte.Model.find({
-            cue: data.cue,
-            show: data.show,
-            rep: data.rep
-        }, function (err, carte) {
-            if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
-            if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
-        });
+    socket.on('tour', function (data) {
+        //TODO : Validation de si c'est le tour du joueur faisant la requête 
+        var tour = true;
+        if (!tour) {
+            socket.emit('tour-erreur', 'Ce n\'est pas votre tour. Attendez');
+        } else {
+            //Validation de l'existance de la carte
+            Carte.Model.find({
+                cue: data.carte.cue,
+                show: data.carte.show,
+                rep: data.carte.rep
+            }, function (err, carte) {
+                if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
+                if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
+            });
 
-        //Insertion de la carte ajouté dans le timeline à la position en paramètre
-        timeline.splice(data.position, 0, data.carte);
-        console.log(timeline);
+            //Validation de si la carte peut être placé à la position en paramètre
+            var carte_pred = dictParties[idPartie].timeline[data.position - 1];
+            var carte_next = dictParties[idPartie].timeline[data.position];
+            var erreurs = false;
+            if (carte_pred != undefined) {
+                if (parseInt(data.carte.rep) < carte_pred.rep) {
+                    erreurs = true;
+                    socket.emit('tour-erreur', 'Impossible de placer la carte à cet endroit');
+                }
+            }
+            if (carte_next != undefined) {
+                if (parseInt(data.carte.rep) > carte_next.rep) {
+                    erreurs = true;
+                    socket.emit('tour-erreur', 'Impossible de placer la carte à cet endroit');
+                }
+            }
 
-        //Changement de tour de joueur
+            if (!erreurs) {
+                //Insertion de la carte ajouté dans le timeline à la position en paramètre
+                dictParties[idPartie].timeline.splice(data.position, 0, data.carte);
+                //TODO : Changement de tour de joueur
+
+                //Suppression de la carte de la main du joueur
+                var cartes = dictParties[idPartie].joueurs[data.userId].cartes;
+                var index = 0;
+                cartes.forEach(function (carte) {
+                    if (carte.cue == data.carte.cue ||
+                        carte.show == data.carte.show ||
+                        parseInt(carte.rep) == parseInt(data.carte.rep)) {
+                        dictParties[idPartie].joueurs[data.userId].cartes.splice(index, 1);
+                    } else {
+                        index++;
+                    }
+                });
+
+                //Refresh des informations des joueurs
+                Object.keys(dictParties[idPartie].joueurs).forEach(key => {
+                    console.log(dictParties[idPartie].joueurs[key].cartes);
+                    io.sockets.to(idPartie).emit('refresh', {
+                        timeline: dictParties[idPartie].timeline,
+                        cartes: dictParties[idPartie].joueurs[key].cartes
+                    });
+                });
+
+            }
+        }
     });
 
     //User is leaving the game

@@ -83,8 +83,7 @@ socket.on('startGame', function (data) {
         drawTimeline(data.timeline);
         drawHand(data.cartes);
     }
-    drawTimeline(data.timeline);
-    addGameEventListener();
+    addGameEventListener(data);
 
     //Envoie de la première carte du timeline au serveur avant la partie
     socket.emit('timeline-carte-debut', data.timeline);
@@ -108,23 +107,28 @@ function drawHand(cartesEnMain) {
 function drawTimeline(cartesDeTimeline) {
     var timeline = $('#timeline');
     timeline.empty(); //Vide l'objet timeline
+
+    var bouton_index = 0;
     //Ajout du premier bouton
-    timeline.append(drawAddButton());
+    timeline.append(drawAddButton(bouton_index));
+    bouton_index++;
 
     //Ajout des cartes
     cartesDeTimeline.forEach(element => {
         timeline.append(drawCarte(element, true, true));
-        timeline.append(drawAddButton());
+        timeline.append(drawAddButton(bouton_index));
+        bouton_index++;
     });
 }
 
 //Retournes un bouton a afficher
-function drawAddButton() {
-    return '<div class="col col-lg">\n' +
+function drawAddButton(bouton_index) {
+    return '<div class="col col-lg" id="' + bouton_index + '"=>\n' +
         '                                <button class="btn btn-success" id="ajout-carte">\n' +
         '                                    <span class="material-icons">add</span>\n' +
         '                                </button>\n' +
-        '                            </div>'
+        '                            </div>';
+
 }
 
 //Retourne une carte, showDate est une bool pour montrer la date
@@ -155,12 +159,10 @@ function drawCarte(carte, blnTimeline, showDate) {
     return carteString;
 }
 
-function addGameEventListener() {
+function addGameEventListener(data) {
     // Recherche de chaque cartes du joueur et
     // ajout de click listener sur chacun des cartes du joueur
-    var tour = true;
     var carte_wait;
-    var cartes = [];
     var border_class = 'border border-primary';
 
     // Ajout de click listener sur les cartes du client
@@ -168,12 +170,6 @@ function addGameEventListener() {
         var cue = $(this)[0].innerText.split('\n')[0];
         var show = $(this)[0].innerText.split('\n')[1];
         var rep = $(this)[0].innerText.split('\n')[3];
-        var une_carte = {
-            cue: cue,
-            show: show,
-            rep: rep
-        };
-        cartes.push(une_carte);
 
         //on click listener
         $(this).on('click', function () {
@@ -191,9 +187,7 @@ function addGameEventListener() {
     //Listener sur le click d'un bouton d'ajouter d'un carte
     $('*[id="ajout-carte"]:visible').each(function () {
         $(this).on('click', function () {
-            if (!tour) {
-                alert("Ce n'est pas encore votre tour");
-            } else if (carte_wait == null) {
+            if (carte_wait == null) {
                 alert('Vous devez sélectionner une carte en premier');
             } else {
                 //Récupération des infos la carte jouée
@@ -206,25 +200,34 @@ function addGameEventListener() {
                     rep: rep
                 };
 
-                var erreurs = false;
-
+                //Récupération de la position à laquelle la carte veut être placée
+                console.log($(this).parent());
+                var position = $(this).parent().attr('id');
                 //Retour de la carte à jouer au serveur pour validation
+                var erreurs = false;
                 socket.emit('tour', {
-                    carte: carte
+                    carte: carte,
+                    userId: data.userId,
+                    position: position
                 });
 
-                //Validation de la présence d'erreur lors de l'ajout d'une la carte
+                //Validation de la présence d'erreur lors de l'ajout d'une carte
+                //(ex. pas le tour du joueur)
                 socket.on('tour-erreur', function (data) {
                     erreurs = true;
                     alert(data);
                 });
-                socket.on('tour-carte-null', function (data) {
-                    erreurs = true;
-                    alert(data);
-                });
+            }
+        });
+    });
+}
 
-                //Ajout de la carte à la position cliqué
-                if (!erreurs) {
+socket.on('refresh', function (data) {
+    drawTimeline(data.timeline);
+    drawHand(data.cartes);
+    addGameEventListener(data);
+});
+/*
                     //Enregistrement du bouton cliqué dans une variable temporaire
                     var btn_clique = $(this);
                     $('#timeline').children('div').each(function () {
@@ -302,7 +305,7 @@ function addGameEventListener() {
         });
     });
 }
-
+*/
 
 
 // *******************************************************
