@@ -36,7 +36,7 @@ socket.on('getUserInfo', function () {
 // 						Messagerie
 // *******************************************************
 
-$('#btnSendMsg').on('click', function () {
+$('#btnMessage').on('click', function () {
     if (message.value != '') {
         socket.emit('chat', {
             message: message.value,
@@ -73,39 +73,6 @@ socket.on('startError', function (data) {
     }
 });
 
-//Définition de la ligne du temps et de sa première carte
-var une_carte;
-$('*[id="cartes-serveur"]:visible').each(function () {
-    var cue = $(this)[0].innerText.split('\n')[0];
-    var show = $(this)[0].innerText.split('\n')[1];
-    var rep = $(this)[0].innerText.split('\n')[3];
-
-    //Envoie des cartes du serveur au serveur
-    var une_carte = {
-        cue: cue,
-        show: show,
-        rep: rep
-    };
-    cartes.push(une_carte);
-});
-socket.emit('envoie-carte-timeline', une_carte);
-
-//Envoie des cartes du serveur au serveur
-var cartes = [];
-$('*[id="cartes-serveur"]:visible').each(function () {
-    var cue = $(this)[0].innerText.split('\n')[0];
-    var show = $(this)[0].innerText.split('\n')[1];
-    var rep = $(this)[0].innerText.split('\n')[3];
-
-    var une_carte = {
-        cue: cue,
-        show: show,
-        rep: rep
-    };
-    ligne_du_temps.push(une_carte);
-});
-//Envoie des cartes au serveur
-socket.emit('envoie-cartes-serveur', cartes);
 
 // Recherche de chaque cartes du joueur et
 // ajout de click listener sur chacun des cartes du joueur

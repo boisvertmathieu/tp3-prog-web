@@ -82,7 +82,7 @@ app.use(function (err, req, res, next) {
 ////////////////////////////////////////////////////////////////
 var Carte = require('./src/models/carteSchema');
 var cartes_serveur = [];
-
+var timeline = [];
 
 // Dict info joueurs
 /**
@@ -126,7 +126,7 @@ io.on('connection', (socket) => {
     // Joueur rejoint la partie dont le numéro est en paramètre de la requête
     socket.join(idPartie);
 
-    console.log('Number of active users : ' + dictParties[idPartie].nbConnect + '\n');
+    console.log('Number of ahttp://localhost:3000/partie/jeu?id=5fac55a764a4c5756e64fc2dctive users : ' + dictParties[idPartie].nbConnect + '\n');
 
     //Demande d'info sur le joueur
     //pour l'ajouter a la partie
@@ -250,11 +250,6 @@ io.on('connection', (socket) => {
         //Insertion de la carte ajouté dans le timeline à la position en paramètre
         timeline.splice(data.position, 0, data.carte);
         //Changement de tour de joueur
-        if (joueur_nb > 4) {
-            joueur_nb = 1;
-        }
-        //Attribution au prochain joueur le droit de jouer
-        io.to(joueurs[joueur_nb]).emit('tour');
     });
 
     //User is leaving the game
