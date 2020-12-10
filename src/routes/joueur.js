@@ -27,15 +27,87 @@ router.get('/partie', function (req, res, next) {
 });
 
 router.get('/partie/inviter', function (req, res, next) {
-    res.render('inviter', {
-        user: req.user
+    Utilisateur.Model.find({}, function (err, users) {
+        if (err) return res.json({
+            success: false,
+            message: err
+        });
+        if (users == null) return res.json({
+            success: false,
+            message: 'Aucune utilisateurs'
+        });
+        res.render('inviter', {
+            user: req.user,
+            users: users
+        });
     });
-})
+});
+
+router.post('/partie/inviter', function (req, res, next) {
+    var usernames = req.body.invitation;
+    //Plus petit ou égal à 3 parce que dans le cas où on invite une seule personne, l'attribut
+    //length de 'usernames' va être la longeur du nom du joueur
+    if (usernames.length > 3) {
+        usernames = [];
+        usernames.push(req.body.invitation);
+    } else {
+        //Création d'une partie dans la BD
+        let partie = new Partie.Model({
+            date_heure: Date.now()
+        });
+        partie.save();
+
+        usernames.forEach(function (username) {
+            //Vérification d'utilisateurs valides
+            if (username != null) {
+                Utilisateur.Model.findOne({
+                    username: username
+                }, function (err, user) {
+                    if (err) return res.json({
+                        success: false,
+                        message: err
+                    });
+                    if (user == null) return res.json({
+                        success: false,
+                        message: 'Aucun utilisateur trouvé avec ce nom : ' + username
+                    });
+
+                    //Création d'une invitation pour le joueur
+                    let invitation = new Invitation.Model({
+                        id_user_to: user._id,
+                        id_partie: partie._id,
+                        status: 0,
+                    });
+                    invitation.save();
+
+                    //Validation de la création de l'invitation
+                    Invitation.Model.find({
+                        _id: invitation._id
+                    }, function (err, invite) {
+                        if (err) return res.json({
+                            success: false,
+                            message: err
+                        });
+                        if (invite == null) return res.json({
+                            success: false,
+                            message: 'Aucune invitation correspondante à ce id'
+                        });
+                        return res.json({
+                            success: true,
+                            message: 'Invitations créées pour la partie : ' + partie._id
+                        });
+                    });
+                });
+            }
+        });
+    }
+});
 
 /**
  * Permet de créer une invitation dont les données sont contenues en body de requête
  */
 router.post('/partie', async function (req, res, next) {
+
     try {
         //Création d'un array avec l'id des joueurs concernés
         var usersIds = [req.user._id];
