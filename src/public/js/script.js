@@ -1,29 +1,76 @@
-var btn = document.getElementById('send');
-var tour = document.getElementById('tour');
-var ligne = document.getElementById('ligne-du-temps');
-var cartes = document.getElementsByClassName('card');
+// *******************************************************
+// 				Déclaration de variables
+// *******************************************************
 
 //Messagerie
 var btnSendMsg = document.getElementById('btnMessage');
 var message = document.getElementById('message');
-var username = document.getElementById('username');
 var chatBox = document.getElementById('chatBox');
 
+//Infos du joueur et de la partie
+var btnStart = document.getElementById('startBtn');
+var userData = document.getElementById('userData');
+var username = document.getElementById('username').value;
+var userId = document.getElementById('userId').value;
+var userAdmin = document.getElementById('userAdmin').value;
 
-// Vérification
-var user_cards = document.getElementsByClassName('user-cards');
-var currentLocation = window.location;
-var path = new URL(currentLocation);
+var debugMode = true;
 
-//connexion au socket
-console.log(path.toString());
+
+// Connection au serveur
 var socket = io();
 
-//Réception des cartes du client
-socket.on('connection', function (data) {
-	console.log('You are connected to game : {' + data.id_partie + '}');
-	console.log('Nombre de joueur connecté à cette partie : ' + data.nb_joueur);
+// *******************************************************
+// 						Initialisation
+// *******************************************************
+
+// Connection initale, envoi des infos du joueur
+socket.on("getUserInfo", function () {
+	socket.emit("returnUserInfo", {
+		userId: userId,
+		username: username,
+		userAdmin: userAdmin
+	})
+	// Suppression de l'info dans la page
+	userData.remove();
+})
+
+// *******************************************************
+// 						Messagerie
+// *******************************************************
+
+btnSendMsg.addEventListener('click',function(){
+	if (message.value != '') {
+		socket.emit('chat', {
+			message: message.value,
+			user: username
+		});
+		message.value = '';
+	}
 });
+
+socket.on('chat', function(data){
+	if (data.user == "superUser") {
+		chatBox.innerHTML += '<div class="row d-flex justify-content-center">' +
+			'<p class="font-italic text-muted">'+ data.message + '</p>' +
+			'</div>'
+	} else {
+		var color = (data.user == username) ? "text-primary" : "text-danger";
+
+		chatBox.innerHTML += '<div class="row">' +
+			'<p class="' + color +'"><strong>'+data.user+': </strong>'+data.message+'</p>' +
+			'</div>'
+	}
+})
+
+//Demande de demarrage de la partie
+btnStart.addEventListener('click',function(){
+	socket.emit("requestStart", {
+		userId: userId
+	})
+});
+
+
 
 //Envoie des cartes du serveur au serveur
 var cartes = [];
@@ -148,26 +195,4 @@ socket.on('tour', function (data) {
 // 						Messagerie
 // *******************************************************
 
-btnSendMsg.addEventListener('click',function(){
-	if (message.value != '') {
-		socket.emit('chat', {
-			message: message.value,
-			user: username.value
-		});
-		message.value = '';
-	}
-});
 
-socket.on('chat', function(data){
-	if (data.user == "superUser") {
-		chatBox.innerHTML += '<div class="row d-flex justify-content-center">' +
-								'<p class="font-italic text-muted">'+ data.message + '</p>' +
-							 '</div>'
-	} else {
-		var color = (data.user == username.value) ? "text-primary" : "text-info";
-
-		chatBox.innerHTML += '<div class="row">' +
-			'<p class="' + color +'"><strong>'+data.user+': </strong>'+data.message+'</p>' +
-			'</div>'
-	}
-});

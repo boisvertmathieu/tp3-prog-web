@@ -75,12 +75,21 @@ app.use(function (err, req, res, next) {
 
 ////////////////////////////////////////////////////////////////
 var Carte = require('./src/models/carteSchema');
-var connect_counter = {};
 var cartes_serveur = [];
+
+
+// Dict info joueurs
+/**
+ * Dictionnaire ayant comme clé la partie (id)
+ * et qui contient un dictionnaire ayant tous les infos
+ * nécessaires pour la partie
+ */
+var dictParties = {}
+
 //Sockets handling
 io.on('connection', (socket) => {
 	//User entering a game
-	console.log('\n----------- A user is connected to socket ' + socket.id + '-----------');
+	console.log('\n----------- A user is connected with socket ' + socket.id + '-----------');
 
 	//Récupération du numéro de partie
 	/** Pour une raison que je ne comprend pas, j'arrivais pas à utiliser la même manière que le
@@ -88,21 +97,58 @@ io.on('connection', (socket) => {
 	 * J'ai trouvé une autre manière de faire à partir des headers mais c'est plus long et plus laid.
 	 * Mais ça fonctionne.
 	 */
-	var partie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
-	if (partie in connect_counter) {
-		connect_counter[partie] += 1;
-	} else {
-		connect_counter[partie] = 1;
-	}
-	console.log('Nunber of active user : ' + connect_counter[partie] + '\n');
+	var idPartie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
 
-	// Envoie d'un signal de connection au joueur
-	socket.emit('connection', {
-		id_partie: partie,
-		nb_joueur: connect_counter[partie],
-	});
+	//Création de la partie si elle n'existe pas
+	if (!(idPartie in dictParties)) {
+		dictParties[idPartie] = {
+			//Nb de connections actives
+			nbConnect: 1,
+			//Liste des objets joueurs
+			joueurs: {}
+		};
+	} else {
+		dictParties[idPartie].nbConnect++;
+	};
+
 	// Joueur rejoint la partie dont le numéro est en paramètre de la requête
-	socket.join(partie);
+	socket.join(idPartie);
+
+	console.log('Number of active users : ' + dictParties[idPartie].nbConnect + '\n');
+
+	//Demande d'info sur le joueur
+	//pour l'ajouter a la partie
+	socket.emit("getUserInfo");
+	socket.on("returnUserInfo", function (data) {
+		//Vérification pour voir si l'utilisateur existe
+		var userId = data.userId;
+
+		if (!(userId in dictParties[idPartie].joueurs)) {
+			dictParties[idPartie].joueurs[userId] = {
+				username: data.username,
+				isAdmin: data.isAdmin
+			}
+		}
+
+		console.log(dictParties[idPartie].joueurs[userId].username + " connected");
+	});
+
+	//Messagerie
+	socket.on('chat', function(data){
+		io.sockets.to(idPartie).emit('chat', data);
+	});
+
+
+	//Démarrage de partie
+	socket.on('requestStart', function (data){
+		//Vérification que la requête est fait par un admin et qu'il
+		//y a plus qu'un joueur
+		if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
+
+		}
+	});
+
+
 
 	//Réception des cartes du serveur
 	socket.on('envoie-cartes-serveur', function (data) {
@@ -130,14 +176,13 @@ io.on('connection', (socket) => {
 	//User is leaving the game
 	socket.on('disconnect', () => {
 		console.log('\n----------- User is disconnected -----------');
-		connect_counter[partie]--;
-		console.log('Number of active user : ' + connect_counter[partie] + '\n');
-	});
-
-	//Messagerie
-	socket.on('chat', function(data){
-		console.log('données reçues '+data);
-		io.sockets.to(partie).emit('chat', data);
+		dictParties[idPartie].nbConnect--;
+		if (dictParties[idPartie].nbConnect > 0) {
+			console.log('Number of active user : ' + dictParties[idPartie].nbConnect + '\n');
+		} else {
+			delete dictParties[idPartie];
+			console.log("Partie vide, destruction de la partie : " + idPartie);
+		};
 	});
 
 });

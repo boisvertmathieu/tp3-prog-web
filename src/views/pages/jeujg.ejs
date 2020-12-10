@@ -32,9 +32,9 @@
 				<div class="col-6">
 					<h5 class="text-center">Vous êtes connecté à la partie : <%= id_partie %></h5>
 				</div>
-				<% if (user.isAdmin) {%>
+				<% if ( user.isAdmin) {%>
 				<div class="col-3 d-flex justify-content-center">
-					<button id="chatBtn" class="btn btn-success">
+					<button id="startBtn" class="btn btn-success">
 						Démarrer la partie
 					</button>
 				</div>
@@ -108,17 +108,16 @@
 				</div>
 				<div class="row d-flex justify-content-between">
 					<input id="message" class="col-9" type="text" placeholder="Votre message" />
-					<input id="username" class="col-9" type="text" value="<%= user.username %>" hidden />
 					<button class="btn btn-primary col-2" id="btnMessage">Envoyer</button>
 				</div>
-
-
 			</div>
 
+			<div id="userData" hidden> <!-- Passage de l'info du user vers le serveur -->
+				<input id="username" type="text" value="<%= user.username %>" hidden />
+				<input id="userId" type="text" value="<%= user._id %>" hidden />
+				<input id="userAdmin" value="<%= user.isAdmin %>" hidden />
 
-
-
-
+			</div>
 		</div>
 		<script src="/js/script.js"></script>
 	</body>
