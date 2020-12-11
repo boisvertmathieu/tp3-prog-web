@@ -1,18 +1,25 @@
 let mongoose = require('mongoose');
+let random = require('mongoose-simple-random');
 
-let carte = mongoose.Schema({
-    cue: {
-        type: String,
-        required: true
-    },
-    rep: {
-        type: Number,
-        required: true
-    },
-    show: {
-        type: String,
-        required: true
-    }
-})
+const Schema = mongoose.Schema;
+const CarteSchema = new Schema({
+	cue: {
+		type: String,
+		required: true,
+	},
+	rep: {
+		type: Number,
+		required: true,
+	},
+	show: {
+		type: String,
+		required: true,
+	},
+});
 
-module.exports = mongoose.model('carte', carte);
+CarteSchema.plugin(random);
+
+let Carte = mongoose.model('Carte', CarteSchema);
+
+module.exports.Schema = CarteSchema;
+module.exports.Model = Carte;

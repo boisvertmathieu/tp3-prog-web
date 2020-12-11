@@ -1,53 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<%- include('../partials/head'); %>
-	</head>
-	<body class="container">
-		<%- include('../partials/header'); %>
-		<main>
-			<div class="container pt-5">
-				<% if (data) { %>
-				<h1>Vous êtes connecté</h1>
-				<h3>Voici vos invitations :</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>_id</th>
-							<th>id_user_to</th>
-							<th>id_partie</th>
-							<th>status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<% for(var i = 0; i < data.length; i++) { %>
-						<tr>
-							<td><%= data[i]._id %></td>
-							<td><%= data[i].id_user_to %></td>
-							<td><%= data[i].id_partie %></td>
-							<td><%= data[i].status %></td>
-						</tr>
-						<% } %>
-					</tbody>
-				</table>
 
-				<div>
-					<p>
-						<a href="/partie">Rejoindre une partie</a>
-					</p>
-					<hr />
-					<p>
-						<a href="/cartes">Voir les cartes</a>
-					</p>
-					<hr />
-					<p>
-						<a href="/joueur/partie">Voir les invitations</a>
-					</p>
-				</div>
-				<% } else { %>
-				<h1>Vous n'êtes pas connecté</h1>
-				<% } %>
-			</div>
-		</main>
-	</body>
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body class="container">
+    <%- include('../partials/header'); %>
+    <main>
+        <div class="container pt-5">
+            <% if (data) { %>
+            <h1>Vous êtes connecté en tant que <%= user.username %></h1>
+            <div class="row">
+                <div class="col">
+                    <h3>Voici vos invitations :</h3>
+                </div>
+                <div class="col">
+                    <a href="/joueur/partie/inviter" class="float-right">Inviter un autre joueur</a>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>_id de l'invitation</th>
+                        <th>Id de la partie</th>
+                        <th>status</th>
+                        <th>Rejoindre la partie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i = 0; i < data.length; i++) { %>
+                    <tr>
+                        <td><%= data[i]._id %></td>
+                        <td><%= data[i].id_partie %></td>
+                        <td><%= data[i].status %></td>
+                        <td>
+                            <form action="/joueur/partie/<%=data[i].id_partie%>" method="post">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="material-icons">login</i>
+                                </button>
+                            </form>
+                            <form action="/joueur/no-partie/<%=data[i].id_partie%>" method="post">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="material-icons">close</i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+            <div>
+                <p>
+                    <a href="/partie">Rejoindre une partie manuellement</a>
+                </p>
+                <hr />
+                <p>
+                    <a href="/cartes">Voir les cartes</a>
+                </p>
+                <hr />
+                <p>
+                    <a href="/joueur/partie">Voir les invitations</a>
+                </p>
+            </div>
+            <% } else { %>
+            <h1>Vous n'êtes pas connecté</h1>
+            <% } %>
+        </div>
+    </main>
+</body>
+
 </html>

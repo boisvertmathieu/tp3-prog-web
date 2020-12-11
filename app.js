@@ -32,18 +32,24 @@ app.set('view engine', 'ejs');
 
 //middlewares
 var middlewares = [
-	bodyParser.urlencoded({ extended: true }),
-	bodyParser.json(),
-	express.json(),
-	express.urlencoded({ extended: false }),
-	express.static(path.join(__dirname, '/src/public')),
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: false,
-		cookie: { maxAge: 604800 },
-	}),
-	cookieParser(),
+    bodyParser.urlencoded({
+        extended: true
+    }),
+    bodyParser.json(),
+    express.json(),
+    express.urlencoded({
+        extended: false
+    }),
+    express.static(path.join(__dirname, '/src/public')),
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            maxAge: 604800
+        },
+    }),
+    cookieParser(),
 ];
 app.use(middlewares);
 
@@ -59,39 +65,248 @@ app.use('/partie', partieRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	next(createError(404));
+    next(createError(404));
 });
 
 // error handler
 app.use(function (err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // set locals, only providing error in development
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	// render the error page
-	res.status(err.status || 500);
-	res.render('error');
+    // render the error page
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 ////////////////////////////////////////////////////////////////
+var Carte = require('./src/models/carteSchema');
+var cartes_serveur = [];
+
+
+// Dict info joueurs
+/**
+ * Dictionnaire ayant comme clé la partie (id)
+ * et qui contient un dictionnaire ayant tous les infos
+ * nécessaires pour la partie
+ */
+var dictParties = {};
+
+// Dictionnaire gardant comme clé le socket de l'utilisateur
+// et comme valeur son id, pour pouvoir le retrouver lors de
+// la déconnexion
+var playerSocket = {};
+
 //Sockets handling
-//User is entering the game
 io.on('connection', (socket) => {
-	console.log('----------- A user is connected -----------');
-	socket.emit('connection');
+    //User entering a game
+    console.log('\n----------- A user is connected with socket ' + socket.id + '-----------');
 
-	socket.on('messageToServer', (message) => {
-		console.log('Message: ' + message);
-	});
+    //Récupération du numéro de partie
+    var idPartie = socket.handshake.headers.referer.split('?')[1].split('=')[1];
 
-	//User is leaving the game
-	socket.on('disconnect', () => {
-		console.log('----------- User is disconnected -----------');
-	});
+    //Création de la partie si elle n'existe pas
+    if (!(idPartie in dictParties)) {
+        dictParties[idPartie] = {
+            //Nb de connections actives
+            nbConnect: 1,
+            //Liste des objets joueurs
+            joueurs: {},
+            timeline: [],
+            tour: {}
+        };
+    } else {
+        dictParties[idPartie].nbConnect++;
+    }
+
+    // Joueur rejoint la partie dont le numéro est en paramètre de la requête
+    socket.join(idPartie);
+
+    console.log('Number of active users : ' + dictParties[idPartie].nbConnect + '\n');
+
+    //Demande d'info sur le joueur
+    //pour l'ajouter a la partie
+    socket.emit("getUserInfo");
+    socket.on("returnUserInfo", function (data) {
+        //Vérification pour voir si l'utilisateur existe
+        var userId = data.userId;
+
+        if (!(userId in dictParties[idPartie].joueurs)) {
+            dictParties[idPartie].joueurs[userId] = {
+                username: data.username,
+                isAdmin: data.userAdmin,
+                cartes: []
+            };
+        }
+
+        playerSocket[socket.id] = userId;
+
+        consoleMessage(data.username + " c'est connecté.");
+
+        console.log(dictParties[idPartie].joueurs[userId].username + " connected");
+    });
+
+    //
+    // Messagerie
+    //
+    socket.on('chat', function (data) {
+        io.sockets.to(idPartie).emit('chat', data);
+    });
+
+    function consoleMessage(message) {
+        io.sockets.to(idPartie).emit('chat', {
+            user: 'superUser',
+            message: message
+        });
+    }
+
+    //Démarrage de partie
+    socket.on('requestStart', function (data) {
+        //Vérification que la requête est fait par un admin et qu'il
+        //y a plus qu'un joueur
+        if (dictParties[idPartie].joueurs[data.userId].isAdmin) {
+            if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
+                console.log('game starting');
+                startGame();
+            }
+            startGame();
+            // } else {
+            //     io.sockets.to(idPartie).emit('startError', {
+            //         userId: data.userId,
+            //         message: "Il n'y à pas assez de joueurs pour débuter"
+            //     });
+            // }
+
+        } else {
+            io.sockets.to(idPartie).emit('startError', {
+                userId: data.userId,
+                message: "Vous n'êtes pas admin, impossible de démarrer la partie"
+            });
+        }
+    });
+
+    function startGame() {
+        //Choix de la carte de départ
+        Carte.Model.findOneRandom(function (err, result) {
+            if (!err) {
+                dictParties[idPartie].timeline = [result];
+            }
+        });
+
+        var idTour = 0;
+        // Génération de 5 cartes par joueur
+        Object.keys(dictParties[idPartie].joueurs).forEach(key => {
+            Carte.Model.findRandom({}, {}, {
+                limit: 5
+            }, function (err, results) {
+                if (err) console.log(err);
+                else {
+                    //Génération des infos nécessaires pour le déroulement de la partie
+                    //idTour, détermine l'ordre du joueur
+                    dictParties[idPartie].tour[idTour] = key; //key est l'id du joueur
+
+                    //Cartes
+                    dictParties[idPartie].joueurs[key].cartes = results;
+
+                    //Envoi des infos
+                    io.sockets.to(idPartie).emit('startGame', {
+                        userId: key,
+                        timeline: dictParties[idPartie].timeline,
+                        cartes: dictParties[idPartie].joueurs[key].cartes
+                    });
+
+                }
+
+            });
+        });
+    }
+
+    //Listener sur un tour joué par le joueur
+    socket.on('tour', function (data) {
+        //TODO : Validation de si c'est le tour du joueur faisant la requête 
+        var tour = true;
+        if (!tour) {
+            socket.emit('tour-erreur', 'Ce n\'est pas votre tour. Attendez');
+        } else {
+            //Validation de l'existance de la carte
+            Carte.Model.find({
+                cue: data.carte.cue,
+                show: data.carte.show,
+                rep: data.carte.rep
+            }, function (err, carte) {
+                if (err) socket.emit('carte-a-jouer-erreur', 'Erreur lors du placement de la carte');
+                if (carte == null) socket.emit('carte-a-jouer-carte-null', 'Aucune carte ne correspond à la carte joué');
+            });
+
+            //Validation de si la carte peut être placé à la position en paramètre
+            var carte_pred = dictParties[idPartie].timeline[data.position - 1];
+            var carte_next = dictParties[idPartie].timeline[data.position];
+            var erreurs = false;
+            if (carte_pred != undefined) {
+                if (parseInt(data.carte.rep) < carte_pred.rep) {
+                    erreurs = true;
+                    socket.emit('tour-erreur', 'Impossible de placer la carte à cet endroit');
+                }
+            }
+            if (carte_next != undefined) {
+                if (parseInt(data.carte.rep) > carte_next.rep) {
+                    erreurs = true;
+                    socket.emit('tour-erreur', 'Impossible de placer la carte à cet endroit');
+                }
+            }
+
+            //TODO : Distribuer une carte au hasard si le user a placé sa carte à la mauvaise place
+
+            if (!erreurs) {
+                //Insertion de la carte ajouté dans le timeline à la position en paramètre
+                dictParties[idPartie].timeline.splice(data.position, 0, data.carte);
+                //TODO : Changement de tour de joueur
+
+                //Suppression de la carte de la main du joueur
+                var index = 0;
+                dictParties[idPartie].joueurs[data.userId].cartes.forEach(function (carte) {
+                    if (carte.cue == data.carte.cue && carte.show == data.carte.show &&
+                        carte.rep == data.carte.rep) {
+                        dictParties[idPartie].joueurs[data.userId].cartes.splice(index, 1);
+                    } else {
+                        index++;
+                    }
+                });
+
+                //Refresh des informations des joueurs
+                Object.keys(dictParties[idPartie].joueurs).forEach(key => {
+                    io.sockets.to(idPartie).emit('refresh', {
+                        userId: key,
+                        timeline: dictParties[idPartie].timeline,
+                        cartes: dictParties[idPartie].joueurs[key].cartes
+                    });
+                });
+
+            }
+        }
+    });
+
+    //User is leaving the game
+    socket.on('disconnect', () => {
+        console.log('\n----------- User is disconnected -----------');
+        dictParties[idPartie].nbConnect--;
+
+        if (dictParties[idPartie].nbConnect > 0) {
+            consoleMessage(dictParties[idPartie].joueurs[playerSocket[socket.id]].username + " c'est déconnecté.");
+            delete playerSocket[socket.id];
+            console.log('Number of active user : ' + dictParties[idPartie].nbConnect + '\n');
+        } else {
+            delete playerSocket[socket.id];
+            delete dictParties[idPartie];
+            console.log("Partie vide, destruction de la partie : " + idPartie);
+        }
+
+    });
+
 });
 
 http.listen(utils.normalizePort(process.env.PORT || '3000'), () => {
-	console.log('Listening on *:3000');
+    console.log('Listening on *:3000');
 });
 
 module.exports = app;
