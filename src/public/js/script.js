@@ -78,6 +78,10 @@ socket.on('startError', function (data) {
     }
 });
 
+
+// *******************************************************
+// 				Fonctions d'affichage
+// *******************************************************
 socket.on('updateHand', function (data) {
     //Mise à jour de la main du joueur concerné
     if (userId == data.userId) {
@@ -89,11 +93,6 @@ socket.on('refreshTimeline', function (data) {
     drawTimeline(data.timeline);
     tourA.innerText = "C'est au tour de " + data.tourA;
 })
-
-
-// *******************************************************
-// 				Fonctions d'affichage
-// *******************************************************
 
 function drawHand(cartesEnMain) {
     var userCards = $('#playerHand');
@@ -166,7 +165,7 @@ function drawCarte(carte, blnTimeline, showDate) {
 function addGameEventListener() {
     // Recherche de chaque cartes du joueur et
     // ajout de click listener sur chacun des cartes du joueur
-    var carte_wait;
+    var carte_wait = null;
     var border_class = 'border border-primary';
 
     // Ajout de click listener sur les cartes du client
@@ -205,34 +204,34 @@ function addGameEventListener() {
                 };
 
                 //Récupération de la position à laquelle la carte veut être placée
-                console.log($(this).parent());
                 var position = $(this).parent().attr('id');
                 //Retour de la carte à jouer au serveur pour validation
-                var erreurs = false;
                 socket.emit('tour', {
                     carte: carte,
                     userId: userId, //Utilisation du userId stocké localement
                     position: position
+                });
+                carte_wait = null;
+                $('*[id="carte-client"]:visible').each(function () {
+                    if ($(this).find('>:first-child').hasClass(border_class)) {
+                        $(this).find('>:first-child').removeClass(border_class);
+                    }
                 });
             }
         });
     });
 };
 
-//Validation de la présence d'erreur lors de l'ajout d'une carte
-//(ex. pas le tour du joueur)
-socket.on('tour-erreur', function (data) {
-    erreurs = true;
-    alert(data);
+socket.on('alert', function (data) {
+    alert(data.message);
 });
 
-socket.on('refresh', function (data) {
+socket.on('targetAlert', function (data) {
     if (userId == data.userId) {
-        drawHand(data.cartes);
+        alert(data.message);
     }
-    drawTimeline(data.timeline);
-    addGameEventListener(data);
 });
+
 
 
 /*
