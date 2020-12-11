@@ -113,7 +113,9 @@ io.on('connection', (socket) => {
             //Liste des objets joueurs
             joueurs: {},
             timeline: [],
-            tour: {}
+            tour: {},
+            numTour: 0,
+            inGame: false
         };
     } else {
         dictParties[idPartie].nbConnect++;
@@ -168,14 +170,12 @@ io.on('connection', (socket) => {
             if (dictParties[idPartie].nbConnect > 1 && Object.keys(dictParties[idPartie].joueurs).length >= 2) {
                 console.log('game starting');
                 startGame();
+            } else {
+                 io.sockets.to(idPartie).emit('startError', {
+                     userId: data.userId,
+                     message: "Il n'y à pas assez de joueurs pour débuter"
+                });
             }
-            startGame();
-            // } else {
-            //     io.sockets.to(idPartie).emit('startError', {
-            //         userId: data.userId,
-            //         message: "Il n'y à pas assez de joueurs pour débuter"
-            //     });
-            // }
 
         } else {
             io.sockets.to(idPartie).emit('startError', {
@@ -194,36 +194,61 @@ io.on('connection', (socket) => {
         });
 
         var idTour = 0;
+        dictParties[idPartie].inGame = true;
+        dictParties[idPartie].numTour = 1;
         // Génération de 5 cartes par joueur
         Object.keys(dictParties[idPartie].joueurs).forEach(key => {
-            Carte.Model.findRandom({}, {}, {
-                limit: 5
-            }, function (err, results) {
-                if (err) console.log(err);
-                else {
-                    //Génération des infos nécessaires pour le déroulement de la partie
-                    //idTour, détermine l'ordre du joueur
-                    dictParties[idPartie].tour[idTour] = key; //key est l'id du joueur
+             Carte.Model.findRandom({}, {}, {limit: 5},
+                function (err, results) {
+                    if (err) console.log(err);
+                    else {
+                        //Génération des infos nécessaires pour le déroulement de la partie
+                        //idTour, détermine l'ordre du joueur
+                        dictParties[idPartie].tour[idTour] = key; //key est l'id du joueur
+                        console.log("User with id " + dictParties[idPartie].tour[idTour] + " added with idTour " + idTour);
+                        idTour++;
+                        //Cartes
+                        dictParties[idPartie].joueurs[key].cartes = results;
 
-                    //Cartes
-                    dictParties[idPartie].joueurs[key].cartes = results;
+                        //Envoi des infos
+                        sendHand(key);
+                        refreshTimeline();
+                    };
+                });
+        });
 
-                    //Envoi des infos
-                    io.sockets.to(idPartie).emit('startGame', {
-                        userId: key,
-                        timeline: dictParties[idPartie].timeline,
-                        cartes: dictParties[idPartie].joueurs[key].cartes
-                    });
 
-                }
+    }
 
-            });
+    //Fonction qui retourne l'id du joueur a qui c'est le tour
+    function tourA() {
+        var numJoueurTour = Object.keys(dictParties[idPartie].joueurs).length % dictParties[idPartie].numTour;
+        userIdTour = dictParties[idPartie].tour[numJoueurTour];
+        return userIdTour;
+    }
+
+    //Envoi un mise a jour a tous les joueurs de la timeline
+    function refreshTimeline() {
+        //Refresh des informations des joueurs
+        io.sockets.to(idPartie).emit('refreshTimeline', {
+            timeline: dictParties[idPartie].timeline,
+            tourA: dictParties[idPartie].joueurs[tourA()].username
+        });
+    };
+
+    //Fonction qui envoi la main a un utilisateur spécifique
+    function sendHand(userId) {
+        io.sockets.to(idPartie).emit('updateHand', {
+            userId: userId,
+            cartes: dictParties[idPartie].joueurs[userId].cartes
         });
     }
 
+
     //Listener sur un tour joué par le joueur
     socket.on('tour', function (data) {
-        //TODO : Validation de si c'est le tour du joueur faisant la requête 
+        // Réception d'un requête de jouer un tour, vérification que c'est
+        // a son tour
         var tour = true;
         if (!tour) {
             socket.emit('tour-erreur', 'Ce n\'est pas votre tour. Attendez');
@@ -273,14 +298,7 @@ io.on('connection', (socket) => {
                     }
                 });
 
-                //Refresh des informations des joueurs
-                Object.keys(dictParties[idPartie].joueurs).forEach(key => {
-                    io.sockets.to(idPartie).emit('refresh', {
-                        userId: key,
-                        timeline: dictParties[idPartie].timeline,
-                        cartes: dictParties[idPartie].joueurs[key].cartes
-                    });
-                });
+
 
             }
         }
