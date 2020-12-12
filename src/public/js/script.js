@@ -17,7 +17,7 @@ var timelineAffiche = document.getElementById('timeline');
 var userCards = document.getElementById('playerHand');
 var tourA = document.getElementById('tourA');
 
-var debugMode = true;
+var debugMode = false;
 
 // Connection au serveur
 var socket = io();
