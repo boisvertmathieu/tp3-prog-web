@@ -146,6 +146,12 @@ io.on('connection', (socket) => {
 
         consoleMessage(data.username + " c'est connecté.");
 
+        //Renvoi des informations au joueur si la partie est en cours
+        if (dictParties[idPartie].inGame) {
+            refreshTimeline();
+            sendHand(userId);
+        }
+
         console.log(dictParties[idPartie].joueurs[userId].username + " connected");
     });
 
@@ -356,6 +362,7 @@ io.on('connection', (socket) => {
                 if (Object.keys(dictParties[idPartie].joueurs[data.userId].cartes).length == 0) {
                     sendAlert(dictParties[idPartie].joueurs[data.userId].username + " a terminé la partie!");
                     consoleMessage("Partie terminé.");
+                    dictParties[idPartie].inGame = false;
                 }
                 sendHand(data.userId);
             }
