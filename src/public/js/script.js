@@ -145,7 +145,7 @@ function drawCarte(carte, blnTimeline, showDate) {
 
     var carteString =
         '<div class=" col py-2" id="' + carteType + '">\n' +
-        '     <div class="card" style="width: 14rem">\n' +
+        '     <div class="card-jeu" style="width: 14rem">\n' +
         '             <div class="card-body ' + cardColor + '">\n';
 
     carteString += '<h4 class="card-title">' + carte.cue + '</h4>';
@@ -166,7 +166,7 @@ function addGameEventListener() {
     // Recherche de chaque cartes du joueur et
     // ajout de click listener sur chacun des cartes du joueur
     var carte_wait = null;
-    var border_class = 'border border-primary';
+    var border_class = 'border-card';
 
     // Ajout de click listener sur les cartes du client
     $('*[id="carte-client"]:visible').each(function () {
@@ -182,7 +182,7 @@ function addGameEventListener() {
                     $(this).find('>:first-child').removeClass(border_class);
                 }
             });
-            $(this).find('>:first-child').addClass('border border-primary');
+            $(this).find('>:first-child').addClass(border_class);
             carte_wait = $(this);
         });
     });

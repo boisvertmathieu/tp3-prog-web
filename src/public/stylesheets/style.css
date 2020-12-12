@@ -20,3 +20,21 @@ a {
 #tour {
     color:gray;
 }
+
+.card-jeu {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border-radius: .25rem;
+}
+
+.border-card{
+    border: 5px solid blue!important;
+    border-color: #007bff!important;
+}

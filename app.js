@@ -171,9 +171,9 @@ io.on('connection', (socket) => {
                 console.log('game starting');
                 startGame();
             } else {
-                 io.sockets.to(idPartie).emit('startError', {
-                     userId: data.userId,
-                     message: "Il n'y à pas assez de joueurs pour débuter"
+                io.sockets.to(idPartie).emit('startError', {
+                    userId: data.userId,
+                    message: "Il n'y à pas assez de joueurs pour débuter"
                 });
             }
 
@@ -198,7 +198,9 @@ io.on('connection', (socket) => {
         dictParties[idPartie].numTour = 0;
         // Génération de 5 cartes par joueur
         Object.keys(dictParties[idPartie].joueurs).forEach(key => {
-             Carte.Model.findRandom({}, {}, {limit: 5},
+            Carte.Model.findRandom({}, {}, {
+                    limit: 5
+                },
                 function (err, results) {
                     if (err) console.log(err);
                     else {
@@ -214,7 +216,7 @@ io.on('connection', (socket) => {
                         sendHand(key);
                         refreshTimeline();
 
-                    };
+                    }
                 });
         });
 
@@ -235,7 +237,7 @@ io.on('connection', (socket) => {
             timeline: dictParties[idPartie].timeline,
             tourA: dictParties[idPartie].joueurs[tourA()].username
         });
-    };
+    }
 
     //Fonction qui envoi la main a un utilisateur spécifique
     function sendHand(userId) {
@@ -249,7 +251,7 @@ io.on('connection', (socket) => {
         io.sockets.to(idPartie).emit('alert', {
             message: message
         });
-    };
+    }
 
     function sendTargetedAlert(userId, message) {
         io.sockets.to(idPartie).emit('targetAlert', {
@@ -313,7 +315,7 @@ io.on('connection', (socket) => {
             //Ajout de la carte à la fin
             if (beginLen == Object.keys(dictParties[idPartie].timeline).length) {
                 dictParties[idPartie].timeline.splice(index, 0, data.carte);
-            };
+            }
 
             //Renvoi de la timeline mise à jour
             dictParties[idPartie].numTour++;
