@@ -72,7 +72,7 @@ router.get('/jeu', function (req, res, next) {
                         });
                     } else {
                         //Le joueur est invité et rejoint la partie.
-                        return res.render('jeujg', {
+                        return res.render('jeu', {
                             id_partie: partieId,
                             user: req.user
                         });

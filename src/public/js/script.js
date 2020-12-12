@@ -86,13 +86,19 @@ socket.on('updateHand', function (data) {
     //Mise à jour de la main du joueur concerné
     if (userId == data.userId) {
         drawHand(data.cartes);
-    };
+    }
 });
 
 socket.on('refreshTimeline', function (data) {
     drawTimeline(data.timeline);
     tourA.innerText = "C'est au tour de " + data.tourA;
-})
+});
+
+socket.on('score', function (data) {
+    if (userId == data.userId) {
+        $('#score')[0].innerText = data.score.toString();
+    }
+});
 
 function drawHand(cartesEnMain) {
     var userCards = $('#playerHand');

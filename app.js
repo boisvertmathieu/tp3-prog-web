@@ -137,7 +137,8 @@ io.on('connection', (socket) => {
             dictParties[idPartie].joueurs[userId] = {
                 username: data.username,
                 isAdmin: data.userAdmin,
-                cartes: []
+                cartes: [],
+                score: 0
             };
         }
 
@@ -260,6 +261,13 @@ io.on('connection', (socket) => {
         });
     }
 
+    function sendScore(userId, score) {
+        io.sockets.to(idPartie).emit('score', {
+            userId: userId,
+            score: score
+        });
+    }
+
 
     //Listener sur un tour joué par le joueur
     socket.on('tour', function (data) {
@@ -283,6 +291,7 @@ io.on('connection', (socket) => {
                         carte.rep == data.carte.rep) {
                         dictParties[idPartie].joueurs[data.userId].cartes.splice(index, 1);
                         blnToutUsage = true;
+
                         return;
                     } else {
                         index++;
@@ -328,8 +337,16 @@ io.on('connection', (socket) => {
                 Carte.Model.findOneRandom(function (err, result) {
                     console.log("random card generating");
                     if (!err) {
-                        dictParties[idPartie].joueurs[data.userId].cartes.splice(Object.keys(dictParties[idPartie].joueurs[data.userId].cartes).length, 0, result);
+                        dictParties[idPartie].joueurs[data.userId].cartes.splice(
+                            Object.keys(dictParties[idPartie].joueurs[data.userId].cartes).length,
+                            0,
+                            result
+                        );
                         sendHand(data.userId);
+                        //Modification et envoi du score au joueur
+                        dictParties[idPartie].joueurs[data.userId].score -= 1;
+                        sendScore(data.userId, dictParties[idPartie].joueurs[data.userId].score);
+
                     } else {
                         console.log("Error generating card");
                     }
